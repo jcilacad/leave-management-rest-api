@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -34,4 +35,6 @@ public class EmployeeDto {
     private BigDecimal vacationLeave;
     private BigDecimal sickLeave;
     private BigDecimal leaveWithoutPay;
+    private LocalDateTime dateCreated;
+    private LocalDateTime dateUpdated;
 }
