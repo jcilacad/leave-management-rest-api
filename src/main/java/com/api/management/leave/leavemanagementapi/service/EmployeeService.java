@@ -1,5 +1,7 @@
 package com.api.management.leave.leavemanagementapi.service;
 
-public interface EmployeeService {
+import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
 
+public interface EmployeeService {
+    EmployeeDto createEmployee(EmployeeDto employeeDto);
 }
