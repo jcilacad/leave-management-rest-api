@@ -1,41 +1,37 @@
-package com.api.management.leave.leavemanagementapi.entity;
+package com.api.management.leave.leavemanagementapi.dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "employees", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"employeeNumber", "officialEmail"})
-})
-public class Employee {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class EmployeeDto {
     private Long id;
+    @NotEmpty
     private String employeeNumber;
+    @NotEmpty
     private String firstName;
+    @NotEmpty
     private String middleName;
+    @NotEmpty
     private String lastName;
     private String nameExtension;
+    @NotEmpty
+    @Email
     private String officialEmail;
     private BigDecimal forcedLeave;
     private BigDecimal specialPrivilegeLeave;
     private BigDecimal vacationLeave;
     private BigDecimal sickLeave;
     private BigDecimal leaveWithoutPay;
-    @CreationTimestamp
-    private LocalDateTime dateCreated;
-    @UpdateTimestamp
-    private LocalDateTime dateUpdated;
 }
