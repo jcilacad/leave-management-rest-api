@@ -7,8 +7,8 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ErrorDetails {
