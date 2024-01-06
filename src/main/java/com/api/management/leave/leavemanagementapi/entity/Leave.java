@@ -16,24 +16,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "employees", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"employeeNumber", "officialEmail"})
-})
-public class Employee {
+@Table(name = "leaves")
+public class Leave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String employeeNumber;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private String nameExtension;
-    private String officialEmail;
-    private BigDecimal forcedLeave;
-    private BigDecimal specialPrivilegeLeave;
+    private String leaveType;
+    private String appliedFrom;
+    private String appliedTo;
+    private String daysRequested;
     private BigDecimal vacationLeave;
     private BigDecimal sickLeave;
-    private BigDecimal leaveWithoutPay;
+    private BigDecimal specialPrivilegeLeave;
+    private BigDecimal forcedLeave;
     @CreationTimestamp
     private LocalDateTime dateCreated;
     @UpdateTimestamp
