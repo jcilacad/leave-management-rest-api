@@ -29,13 +29,21 @@ public class Employee {
     private String lastName;
     private String nameExtension;
     private String officialEmail;
-    private BigDecimal forcedLeave;
-    private BigDecimal specialPrivilegeLeave;
-    private BigDecimal vacationLeave;
-    private BigDecimal sickLeave;
+    private BigDecimal remainingForcedLeave;
+    private BigDecimal remainingSpecialPrivilegeLeave;
+    private BigDecimal vacationLeaveTotal;
+    private BigDecimal sickLeaveTotal;
     private BigDecimal leaveWithoutPay;
     @CreationTimestamp
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateUpdated;
+
+    public Employee() {
+        this.remainingForcedLeave = BigDecimal.valueOf(5.00);
+        this.remainingSpecialPrivilegeLeave = BigDecimal.valueOf(3.00);
+        this.vacationLeaveTotal = BigDecimal.valueOf(0.0000);
+        this.sickLeaveTotal = BigDecimal.valueOf(0.0000);
+        this.leaveWithoutPay = BigDecimal.valueOf(0.0000);
+    }
 }
