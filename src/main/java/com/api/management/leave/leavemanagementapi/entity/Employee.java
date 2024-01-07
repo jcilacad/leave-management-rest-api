@@ -10,6 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -38,6 +40,8 @@ public class Employee {
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateUpdated;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private Set<Leave> leaves;
 
     public Employee() {
         this.remainingForcedLeave = BigDecimal.valueOf(5.00);
