@@ -3,6 +3,7 @@ package com.api.management.leave.leavemanagementapi.service.impl;
 import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
 import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
 import com.api.management.leave.leavemanagementapi.entity.Employee;
+import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
@@ -50,5 +51,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeResponse.setTotalPages(employees.getTotalPages());
         employeeResponse.setLast(employees.isLast());
         return employeeResponse;
+    }
+
+    @Override
+    public EmployeeDto getEmployeeById(Long id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
+        return employeeMapper.toDto(employee);
     }
 }

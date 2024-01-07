@@ -6,4 +6,5 @@ import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
 public interface EmployeeService {
     EmployeeDto createEmployee(EmployeeDto employeeDto);
     EmployeeResponse getAllEmployees(int pageNo, int pageSize, String sortBy, String sortDir);
+    EmployeeDto getEmployeeById(Long id);
 }
