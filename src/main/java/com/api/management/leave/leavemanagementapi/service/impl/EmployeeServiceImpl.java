@@ -7,12 +7,14 @@ import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundExc
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
+import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = employeeMapper.toEntity(employeeDto);
+        employee.setRemainingForcedLeave(AppConstants.DEFAULT_FORCED_LEAVE);
+        employee.setRemainingSpecialPrivilegeLeave(AppConstants.DEFAULT_SPECIAL_PRIVILEGE_LEAVE);
+        employee.setVacationLeaveTotal(AppConstants.DEFAULT_VACATION_LEAVE);
+        employee.setSickLeaveTotal(AppConstants.DEFAULT_SICK_LEAVE);
+        employee.setLeaveWithoutPayTotal(AppConstants.DEFAULT_LEAVE_WITHOUT_PAY);
         Employee savedEmployee = employeeRepository.save(employee);
         return employeeMapper.toDto(savedEmployee);
     }

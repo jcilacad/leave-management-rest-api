@@ -1,5 +1,6 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
+import com.api.management.leave.leavemanagementapi.entity.Leave;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -11,6 +12,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,11 +32,72 @@ public class EmployeeDto {
     @NotEmpty
     @Email
     private String officialEmail;
-    private BigDecimal forcedLeave;
-    private BigDecimal specialPrivilegeLeave;
-    private BigDecimal vacationLeave;
-    private BigDecimal sickLeave;
-    private BigDecimal leaveWithoutPay;
+    private BigDecimal remainingForcedLeave;
+    private BigDecimal remainingSpecialPrivilegeLeave;
+    private BigDecimal vacationLeaveTotal;
+    private BigDecimal sickLeaveTotal;
+    private BigDecimal leaveWithoutPayTotal;
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
+    private Set<Leave> leaves;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmployeeNumber() {
+        return employeeNumber;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getNameExtension() {
+        return nameExtension;
+    }
+
+    public String getOfficialEmail() {
+        return officialEmail;
+    }
+
+    public BigDecimal getRemainingForcedLeave() {
+        return remainingForcedLeave;
+    }
+
+    public BigDecimal getRemainingSpecialPrivilegeLeave() {
+        return remainingSpecialPrivilegeLeave;
+    }
+
+    public BigDecimal getVacationLeaveTotal() {
+        return vacationLeaveTotal;
+    }
+
+    public BigDecimal getSickLeaveTotal() {
+        return sickLeaveTotal;
+    }
+
+    public BigDecimal getLeaveWithoutPayTotal() {
+        return leaveWithoutPayTotal;
+    }
+
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
+    }
+
+    public LocalDateTime getDateUpdated() {
+        return dateUpdated;
+    }
+
+    public Set<Leave> getLeaves() {
+        return leaves;
+    }
 }
