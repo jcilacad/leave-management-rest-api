@@ -27,9 +27,13 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.getAllEmployees(pageNo, pageSize, sortBy, sortDir));
     }
 
-
     @PostMapping
     public ResponseEntity<EmployeeDto> createEmployee(@RequestBody @Valid EmployeeDto employeeDto) {
         return new ResponseEntity<>(employeeService.createEmployee(employeeDto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
+        return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 }
