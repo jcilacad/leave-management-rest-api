@@ -3,6 +3,7 @@ package com.api.management.leave.leavemanagementapi.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "employees", uniqueConstraints = {
@@ -39,8 +41,4 @@ public class Employee {
     private LocalDateTime dateUpdated;
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<Leave> leaves;
-
-    public Employee() {
-
-    }
 }
