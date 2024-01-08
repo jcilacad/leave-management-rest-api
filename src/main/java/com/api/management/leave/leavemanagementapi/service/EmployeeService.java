@@ -8,4 +8,5 @@ public interface EmployeeService {
     EmployeeResponse getAllEmployees(int pageNo, int pageSize, String sortBy, String sortDir);
     EmployeeDto getEmployeeById(Long id);
     EmployeeDto updateEmployee(EmployeeDto employeeDto, Long id);
+    void deleteEmployee(Long id);
 }
