@@ -47,6 +47,21 @@ public class EmployeeServiceImpl implements EmployeeService {
                 Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Employee> employees = employeeRepository.findAll(pageable);
+        return setEmployeeResponse(employees);
+    }
+
+    @Override
+    public EmployeeResponse getEmployeesByQuery(String query, int pageNo, int pageSize, String sortBy, String sortDir) {
+        List<Employee> filteredEmployees = employeeRepository.findEmployeesByQuery(query);
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+                Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Employee> employees = employeeRepository.findAllFiltered(filteredEmployees, pageable);
+        return setEmployeeResponse(employees);
+    }
+
+    private EmployeeResponse setEmployeeResponse(Page<Employee> employees) {
         List<EmployeeDto> content = employees.getContent().stream()
                 .map(employee -> employeeMapper.toDto(employee))
                 .collect(Collectors.toList());
