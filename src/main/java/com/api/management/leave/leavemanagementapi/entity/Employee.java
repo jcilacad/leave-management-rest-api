@@ -22,13 +22,18 @@ import java.util.Set;
 })
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_generator")
+    @SequenceGenerator(name = "employee_generator", sequenceName = "employee_seq", allocationSize = 1)
     private Long id;
+    @Column(nullable = false)
     private String employeeNumber;
+    @Column(nullable = false)
     private String firstName;
     private String middleName;
+    @Column(nullable = false)
     private String lastName;
     private String nameExtension;
+    @Column(nullable = false)
     private String officialEmail;
     private BigDecimal remainingForcedLeave;
     private BigDecimal remainingSpecialPrivilegeLeave;

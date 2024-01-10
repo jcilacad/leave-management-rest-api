@@ -19,7 +19,8 @@ import java.time.LocalDateTime;
 @Table(name = "leaves")
 public class Leave {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "leave_generator")
+    @SequenceGenerator(name = "leave_generator", sequenceName = "leave_seq", allocationSize = 1)
     private Long id;
     private String leaveType;
     private String appliedFrom;
