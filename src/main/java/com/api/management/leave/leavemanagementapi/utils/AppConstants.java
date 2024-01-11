@@ -12,4 +12,5 @@ public class AppConstants {
     public static final BigDecimal DEFAULT_VACATION_LEAVE = BigDecimal.valueOf(0.000);
     public static final BigDecimal DEFAULT_SICK_LEAVE = BigDecimal.valueOf(0.000);
     public static final BigDecimal DEFAULT_LEAVE_WITHOUT_PAY = BigDecimal.valueOf(0.000);
+    public static final boolean DEFAULT_IS_EXCLUDED = false;
 }

@@ -35,6 +35,7 @@ public class Employee {
     private String nameExtension;
     @Column(nullable = false)
     private String officialEmail;
+    private boolean excluded;
     private BigDecimal remainingForcedLeave;
     private BigDecimal remainingSpecialPrivilegeLeave;
     private BigDecimal vacationLeaveTotal;

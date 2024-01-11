@@ -32,6 +32,7 @@ public class EmployeeDto {
     @NotEmpty
     @Email
     private String officialEmail;
+    private boolean excluded;
     private BigDecimal remainingForcedLeave;
     private BigDecimal remainingSpecialPrivilegeLeave;
     private BigDecimal vacationLeaveTotal;
