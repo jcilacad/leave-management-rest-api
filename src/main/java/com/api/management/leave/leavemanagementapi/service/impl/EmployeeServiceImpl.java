@@ -31,6 +31,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
         Employee employee = employeeMapper.toEntity(employeeDto);
+        employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
         employee.setRemainingForcedLeave(AppConstants.DEFAULT_FORCED_LEAVE);
         employee.setRemainingSpecialPrivilegeLeave(AppConstants.DEFAULT_SPECIAL_PRIVILEGE_LEAVE);
         employee.setVacationLeaveTotal(AppConstants.DEFAULT_VACATION_LEAVE);
@@ -106,5 +107,16 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
         employeeRepository.deleteById(id);
+    }
+
+    @Override
+    public void excludeEmployeeForcedLeave(Long id, Boolean excluded) {
+        if (excluded) {
+            Employee employee = employeeRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
+            employee.setExcluded(true);
+            employeeRepository.save(employee);
+        }
+
     }
 }

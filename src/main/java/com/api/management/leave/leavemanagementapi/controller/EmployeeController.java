@@ -58,4 +58,12 @@ public class EmployeeController {
     ) {
         return ResponseEntity.ok(employeeService.getEmployeesByQuery(query, pageNo, pageSize, sortBy, sortDir));
     }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<String> excludeEmployeeForcedLeave(@PathVariable Long id,
+                                                             @RequestParam(name = "excluded",
+                                                                     required = false) Boolean excluded) {
+        employeeService.excludeEmployeeForcedLeave(id, excluded);
+        return ResponseEntity.ok("Employee excluded successfully.");
+    }
 }

@@ -10,4 +10,5 @@ public interface EmployeeService {
     EmployeeDto getEmployeeById(Long id);
     EmployeeDto updateEmployee(EmployeeDto employeeDto, Long id);
     void deleteEmployee(Long id);
+    void excludeEmployeeForcedLeave(Long id, Boolean excluded);
 }
