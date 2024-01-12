@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Member;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.StringJoiner;
@@ -27,6 +28,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
+    }
+
+    private static void accept(Employee employee) {
+        if (!employee.isExcluded()) {
+            System.out.println("hello");
+        } else {
+
+        }
     }
 
     @Override
@@ -128,5 +137,37 @@ public class EmployeeServiceImpl implements EmployeeService {
         EmployeeDto employeeDto = employeeMapper.toDto(updatedEmployee);
         employeeDto.setMessage(message.toString());
         return employeeDto;
+    }
+
+    @Override
+    public void resetForcedLeave() {
+        employeeRepository.findAll().forEach(employee -> {
+            BigDecimal remForcedLeave = employee.getRemainingForcedLeave();
+            BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
+            if (!employee.isExcluded()) {
+                BigDecimal diffRemForcedAndVacation = remVacationLeave.subtract(remForcedLeave);
+                diffRemForcedAndVacation = diffRemForcedAndVacation.signum() == -1
+                        ? BigDecimal.valueOf(0.000)
+                        : diffRemForcedAndVacation;
+                employee.setVacationLeaveTotal(diffRemForcedAndVacation);
+                computeForcedLeave(employee);
+            }
+
+            employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
+            computeForcedLeave(employee);
+            employee.setRemainingSpecialPrivilegeLeave(BigDecimal.valueOf(3.00));
+        });
+                
+                
+    }
+
+    private void computeForcedLeave(Employee employee) {
+        BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
+        if (remVacationLeave.compareTo(BigDecimal.valueOf(5.00)) == 1 || remVacationLeave.compareTo(BigDecimal.valueOf(5.00)) == 0) {
+            employee.setRemainingForcedLeave(BigDecimal.valueOf(5.00));
+        } else {
+            employee.setRemainingForcedLeave(remVacationLeave);
+        }
+
     }
 }
