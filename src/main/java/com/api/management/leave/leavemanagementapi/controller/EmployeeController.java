@@ -60,10 +60,9 @@ public class EmployeeController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<String> excludeEmployeeForcedLeave(@PathVariable Long id,
-                                                             @RequestParam(name = "excluded",
-                                                                     required = false) Boolean excluded) {
-        employeeService.excludeEmployeeForcedLeave(id, excluded);
-        return ResponseEntity.ok("Employee excluded successfully.");
+    public ResponseEntity<EmployeeDto> excludeEmployeeForcedLeave(
+            @PathVariable Long id,
+            @RequestParam(name = "excluded", required = false) Boolean excluded) {
+        return ResponseEntity.ok(employeeService.excludeEmployeeForcedLeave(id, excluded));
     }
 }
