@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Service
@@ -110,13 +111,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void excludeEmployeeForcedLeave(Long id, Boolean excluded) {
+    public EmployeeDto excludeEmployeeForcedLeave(Long id, Boolean excluded) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
+        StringBuilder message = new StringBuilder();
         if (excluded) {
-            Employee employee = employeeRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
-            employee.setExcluded(true);
-            employeeRepository.save(employee);
+            if(employee.isExcluded()) {
+                message.append("Employee was already excluded.");
+            } else {
+                employee.setExcluded(!AppConstants.DEFAULT_IS_EXCLUDED);
+                message.append("Employee excluded successfully.");
+            }
         }
 
+        Employee updatedEmployee = employeeRepository.save(employee);
+        EmployeeDto employeeDto = employeeMapper.toDto(updatedEmployee);
+        employeeDto.setMessage(message.toString());
+        return employeeDto;
     }
 }

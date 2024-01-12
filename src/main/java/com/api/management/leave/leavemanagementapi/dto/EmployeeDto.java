@@ -41,4 +41,5 @@ public class EmployeeDto {
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
     private Set<Leave> leaves;
+    private String message;
 }
