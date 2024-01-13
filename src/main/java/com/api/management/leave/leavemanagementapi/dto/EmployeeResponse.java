@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeResponse {
+    private String message;
     private List<EmployeeDto> content;
     private int pageNo;
     private  int pageSize;

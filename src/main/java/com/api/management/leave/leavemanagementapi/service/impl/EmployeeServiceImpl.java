@@ -13,11 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Member;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,14 +27,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
-    }
-
-    private static void accept(Employee employee) {
-        if (!employee.isExcluded()) {
-            System.out.println("hello");
-        } else {
-
-        }
     }
 
     @Override
@@ -62,28 +53,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public EmployeeResponse getEmployeesByQuery(String query, int pageNo, int pageSize, String sortBy, String sortDir) {
         List<Employee> filteredEmployees = employeeRepository.findEmployeesByQuery(query);
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
-                Sort.by(sortBy).ascending() :
-                Sort.by(sortBy).descending();
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<Employee> employees = employeeRepository.findAllFiltered(filteredEmployees, pageable);
         return setEmployeeResponse(employees);
-    }
-
-    private EmployeeResponse setEmployeeResponse(Page<Employee> employees) {
-        List<EmployeeDto> content = employees.getContent().stream()
-                .map(employee -> employeeMapper.toDto(employee))
-                .collect(Collectors.toList());
-        EmployeeResponse employeeResponse = new EmployeeResponse();
-        employeeResponse.setContent(content);
-        employeeResponse.setPageNo(employees.getNumber());
-        employeeResponse.setPageSize(employees.getSize());
-        employeeResponse.setTotalElements(employees.getTotalElements());
-        employeeResponse.setTotalPages(employees.getTotalPages());
-        employeeResponse.setLast(employees.isLast());
-        return employeeResponse;
     }
 
     @Override
@@ -140,30 +118,60 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void resetForcedLeave() {
-        List<Employee> employees = employeeRepository.findAll().stream().map(employee -> {
-            BigDecimal remForcedLeave = employee.getRemainingForcedLeave();
-            BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
-            if (!employee.isExcluded()) {
-                BigDecimal diffRemForcedAndVacation = remVacationLeave.subtract(remForcedLeave);
-                diffRemForcedAndVacation = diffRemForcedAndVacation.signum() == -1
-                        ? AppConstants.ZERO
-                        : diffRemForcedAndVacation;
-                employee.setVacationLeaveTotal(diffRemForcedAndVacation);
-                computeForcedLeave(employee);
-            }
+    @Transactional
+    public EmployeeResponse resetLeaves(boolean reset, int pageNo, int pageSize, String sortBy, String sortDir) {
+        if (reset) {
+            List<Employee> employees = employeeRepository.findAll().stream().map(employee -> {
+                BigDecimal remForcedLeave = employee.getRemainingForcedLeave();
+                BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
+                if (!employee.isExcluded()) {
+                    BigDecimal diffRemForcedAndVacation = remVacationLeave.subtract(remForcedLeave);
+                    diffRemForcedAndVacation = diffRemForcedAndVacation.signum() == -1
+                            ? AppConstants.ZERO
+                            : diffRemForcedAndVacation;
+                    employee.setVacationLeaveTotal(diffRemForcedAndVacation);
+                    computeForcedLeave(employee);
+                }
 
-            employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
-            computeForcedLeave(employee);
-            employee.setRemainingSpecialPrivilegeLeave(AppConstants.THREE);
-            return employee;
-        }).collect(Collectors.toList());
-        employeeRepository.saveAll(employees);
+                employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
+                computeForcedLeave(employee);
+                employee.setRemainingSpecialPrivilegeLeave(AppConstants.THREE);
+                return employee;
+            }).collect(Collectors.toList());
+            List<Employee> savedEmployees = employeeRepository.saveAll(employees);
+            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                    ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+            Page<Employee> employeePage = employeeRepository.findAllFiltered(savedEmployees, pageable);
+            EmployeeResponse response = setEmployeeResponse(employeePage);
+            response.setMessage("Employee leaves successfully reset.");
+            return response;
+        } else {
+            EmployeeResponse response = getAllEmployees(pageNo, pageSize, sortBy, sortDir);
+            response.setMessage("Employee leaves failed to reset.");
+            return response;
+        }
+
+    }
+
+    private EmployeeResponse setEmployeeResponse(Page<Employee> employees) {
+        List<EmployeeDto> content = employees.getContent().stream()
+                .map(employee -> employeeMapper.toDto(employee))
+                .collect(Collectors.toList());
+        EmployeeResponse employeeResponse = new EmployeeResponse();
+        employeeResponse.setContent(content);
+        employeeResponse.setPageNo(employees.getNumber());
+        employeeResponse.setPageSize(employees.getSize());
+        employeeResponse.setTotalElements(employees.getTotalElements());
+        employeeResponse.setTotalPages(employees.getTotalPages());
+        employeeResponse.setLast(employees.isLast());
+        return employeeResponse;
     }
 
     private void computeForcedLeave(Employee employee) {
         BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
-        if (remVacationLeave.compareTo(AppConstants.FIVE) == 1 || remVacationLeave.compareTo(BigDecimal.valueOf(5.00)) == 0) {
+        if (remVacationLeave.compareTo(AppConstants.FIVE) == 1 || remVacationLeave.compareTo(AppConstants.FIVE) == 0) {
             employee.setRemainingForcedLeave(AppConstants.FIVE);
         } else {
             employee.setRemainingForcedLeave(remVacationLeave);

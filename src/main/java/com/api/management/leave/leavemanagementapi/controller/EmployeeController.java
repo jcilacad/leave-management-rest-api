@@ -65,4 +65,15 @@ public class EmployeeController {
             @RequestParam(name = "excluded", required = false) Boolean excluded) {
         return ResponseEntity.ok(employeeService.excludeEmployeeForcedLeave(id, excluded));
     }
+
+    @PostMapping("/leaves")
+    public ResponseEntity<EmployeeResponse> resetLeaves (
+            @RequestParam(name = "reset", required = false) boolean reset,
+            @RequestParam(name = "pageNo", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNo,
+            @RequestParam(name = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(name = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(name = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir
+    ) {
+        return ResponseEntity.ok(employeeService.resetLeaves(reset, pageNo, pageSize, sortBy, sortDir));
+    }
 }
