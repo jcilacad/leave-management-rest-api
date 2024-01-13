@@ -125,7 +125,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
         StringBuilder message = new StringBuilder();
         if (excluded) {
-            if(employee.isExcluded()) {
+            if (employee.isExcluded()) {
                 message.append("Employee was already excluded.");
             } else {
                 employee.setExcluded(!AppConstants.DEFAULT_IS_EXCLUDED);
@@ -141,7 +141,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void resetForcedLeave() {
-        employeeRepository.findAll().forEach(employee -> {
+        List<Employee> employees = employeeRepository.findAll().stream().map(employee -> {
             BigDecimal remForcedLeave = employee.getRemainingForcedLeave();
             BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
             if (!employee.isExcluded()) {
@@ -156,9 +156,9 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
             computeForcedLeave(employee);
             employee.setRemainingSpecialPrivilegeLeave(BigDecimal.valueOf(3.00));
-        });
-                
-                
+            return employee;
+        }).collect(Collectors.toList());
+        employeeRepository.saveAll(employees);
     }
 
     private void computeForcedLeave(Employee employee) {
