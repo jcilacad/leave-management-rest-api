@@ -147,7 +147,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (!employee.isExcluded()) {
                 BigDecimal diffRemForcedAndVacation = remVacationLeave.subtract(remForcedLeave);
                 diffRemForcedAndVacation = diffRemForcedAndVacation.signum() == -1
-                        ? BigDecimal.valueOf(0.000)
+                        ? AppConstants.ZERO
                         : diffRemForcedAndVacation;
                 employee.setVacationLeaveTotal(diffRemForcedAndVacation);
                 computeForcedLeave(employee);
@@ -155,7 +155,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
             computeForcedLeave(employee);
-            employee.setRemainingSpecialPrivilegeLeave(BigDecimal.valueOf(3.00));
+            employee.setRemainingSpecialPrivilegeLeave(AppConstants.THREE);
             return employee;
         }).collect(Collectors.toList());
         employeeRepository.saveAll(employees);
@@ -163,8 +163,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void computeForcedLeave(Employee employee) {
         BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
-        if (remVacationLeave.compareTo(BigDecimal.valueOf(5.00)) == 1 || remVacationLeave.compareTo(BigDecimal.valueOf(5.00)) == 0) {
-            employee.setRemainingForcedLeave(BigDecimal.valueOf(5.00));
+        if (remVacationLeave.compareTo(AppConstants.FIVE) == 1 || remVacationLeave.compareTo(BigDecimal.valueOf(5.00)) == 0) {
+            employee.setRemainingForcedLeave(AppConstants.FIVE);
         } else {
             employee.setRemainingForcedLeave(remVacationLeave);
         }
