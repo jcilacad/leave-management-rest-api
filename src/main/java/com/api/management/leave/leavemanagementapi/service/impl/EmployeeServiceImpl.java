@@ -8,6 +8,7 @@ import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,14 +21,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private EmployeeMapper employeeMapper;
-
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
-        this.employeeRepository = employeeRepository;
-        this.employeeMapper = employeeMapper;
-    }
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {

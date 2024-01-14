@@ -5,18 +5,16 @@ import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/employees")
+@RequiredArgsConstructor
 public class EmployeeController {
     private EmployeeService employeeService;
-
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
-    }
 
     @GetMapping
     public ResponseEntity<EmployeeResponse> getAllEmployees(
