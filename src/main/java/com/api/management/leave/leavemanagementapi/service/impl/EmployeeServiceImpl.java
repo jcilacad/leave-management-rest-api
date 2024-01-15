@@ -9,6 +9,7 @@ import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
+import org.apache.el.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -91,15 +92,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(Long id) {
-        employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
+        boolean employee = employeeRepository.existsById(id);
+        if (!employee) {
+            throw new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id);
+        }
         employeeRepository.deleteById(id);
     }
 
     @Override
-    public EmployeeDto excludeEmployeeForcedLeave(Long id, Boolean excluded) {
+    public EmployeeDto excludeEmployeeForcedLeave(Long id, boolean excluded) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "id", id));
         StringBuilder message = new StringBuilder();
         if (excluded) {
             if (employee.isExcluded()) {
@@ -147,7 +150,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             response.setMessage("Employee leaves successfully reset.");
             return response;
         } else {
-            EmployeeResponse response = getAllEmployees(pageNo, pageSize, sortBy, sortDir);
+            EmployeeResponse response = this.getAllEmployees(pageNo, pageSize, sortBy, sortDir);
             response.setMessage("Employee leaves failed to reset.");
             return response;
         }
@@ -170,11 +173,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void computeForcedLeave(Employee employee) {
         BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
-        if (remVacationLeave.compareTo(AppConstants.FIVE) == 1 || remVacationLeave.compareTo(AppConstants.FIVE) == 0) {
-            employee.setRemainingForcedLeave(AppConstants.FIVE);
-        } else {
-            employee.setRemainingForcedLeave(remVacationLeave);
-        }
-
+        employee.setRemainingForcedLeave(remVacationLeave.compareTo(AppConstants.FIVE) == 1
+                || remVacationLeave.compareTo(AppConstants.FIVE) == 0
+                ? AppConstants.FIVE
+                : remVacationLeave);
     }
 }

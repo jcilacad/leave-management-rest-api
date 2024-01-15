@@ -10,6 +10,6 @@ public interface EmployeeService {
     EmployeeDto getEmployeeById(Long id);
     EmployeeDto updateEmployee(EmployeeDto employeeDto, Long id);
     void deleteEmployee(Long id);
-    EmployeeDto excludeEmployeeForcedLeave(Long id, Boolean excluded);
+    EmployeeDto excludeEmployeeForcedLeave(Long id, boolean excluded);
     EmployeeResponse resetLeaves(boolean reset, int pageNo, int pageSize, String sortBy, String sortDir);
 }
