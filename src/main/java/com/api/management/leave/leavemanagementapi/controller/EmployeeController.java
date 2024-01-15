@@ -2,17 +2,19 @@ package com.api.management.leave.leavemanagementapi.controller;
 
 import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
 import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
+import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
+import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/employees")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class EmployeeController {
     private EmployeeService employeeService;
 
@@ -36,6 +38,7 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
+
     }
 
     @PutMapping("/{id}")
@@ -62,8 +65,19 @@ public class EmployeeController {
             @RequestParam(name = "pageNo", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNo,
             @RequestParam(name = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY) String sortBy,
-            @RequestParam(name = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir
-    ) {
+            @RequestParam(name = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir) {
         return ResponseEntity.ok(employeeService.resetLeaves(reset, pageNo, pageSize, sortBy, sortDir));
+    }
+
+    @GetMapping("/leaves")
+    public ResponseEntity<LeaveResponseDto> getEmployeeByOfficialEmailOrEmployeeNumber(@RequestParam(name = "query", required = false) String query) {
+        return ResponseEntity.ok(employeeService.getEmployeeByOfficialEmailOrEmployeeNumber(query));
+    }
+
+    @PostMapping("/{id}/leaves")
+    public ResponseEntity<LeaveResponseDto> leaveRequest (
+            @PathVariable Long id,
+            @RequestBody @Valid LeaveRequestDto leaveRequestDto) {
+        return ResponseEntity.ok(employeeService.leaveRequest(id, leaveRequestDto));
     }
 }

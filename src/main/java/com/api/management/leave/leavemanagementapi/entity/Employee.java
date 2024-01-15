@@ -23,7 +23,7 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_generator")
     @SequenceGenerator(name = "employee_generator", sequenceName = "employee_seq", allocationSize = 1)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String employeeNumber;
     @Column(nullable = false)
     private String firstName;
@@ -31,7 +31,7 @@ public class Employee {
     @Column(nullable = false)
     private String lastName;
     private String nameExtension;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String officialEmail;
     private boolean excluded;
     private BigDecimal remainingForcedLeave;
