@@ -96,6 +96,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employee) {
             throw new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id);
         }
+
         employeeRepository.deleteById(id);
     }
 
