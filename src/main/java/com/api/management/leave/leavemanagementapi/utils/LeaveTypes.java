@@ -16,9 +16,13 @@ public enum LeaveTypes {
     ADOPTION_LEAVE("Adoption Leave");
 
     private String leave;
-    
+
     LeaveTypes(String leave) {
         this.leave = leave;
+    }
+
+    public String getLeave () {
+        return leave;
     }
 
     public String getName () {

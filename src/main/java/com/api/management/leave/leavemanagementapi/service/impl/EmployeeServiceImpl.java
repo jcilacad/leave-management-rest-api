@@ -2,14 +2,16 @@ package com.api.management.leave.leavemanagementapi.service.impl;
 
 import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
 import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
+import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
+import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
 import com.api.management.leave.leavemanagementapi.entity.Employee;
 import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
-import lombok.RequiredArgsConstructor;
-import org.apache.el.stream.Stream;
+import com.api.management.leave.leavemanagementapi.utils.LeaveTypes;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private EmployeeMapper employeeMapper;
@@ -37,7 +40,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setSickLeaveTotal(AppConstants.DEFAULT_SICK_LEAVE);
         employee.setLeaveWithoutPayTotal(AppConstants.DEFAULT_LEAVE_WITHOUT_PAY);
         Employee savedEmployee = employeeRepository.save(employee);
-        return employeeMapper.toDto(savedEmployee);
+        EmployeeDto employeeToDto = employeeMapper.toDto(savedEmployee);
+        employeeToDto.setMessage("Employee created successfully.");
+        return employeeToDto;
     }
 
     @Override
@@ -156,6 +161,36 @@ public class EmployeeServiceImpl implements EmployeeService {
             return response;
         }
 
+    }
+
+    @Override
+    public LeaveResponseDto getEmployeeByOfficialEmailOrEmployeeNumber(String query) {
+        Employee employee = employeeRepository.findEmployeeByEmailOrEmployeeNumber(query)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "query", query));
+        EmployeeDto employeeDto =  employeeMapper.toDto(employee);
+        LeaveResponseDto leaveResponseDto = new LeaveResponseDto();
+        leaveResponseDto.setEmployeeDto(employeeDto);
+        List<String> leaveTypes = Arrays.stream(LeaveTypes.values()).map(leaveType -> leaveType.getLeave()).collect(Collectors.toList());
+        leaveResponseDto.setLeaveTypes(leaveTypes);
+        BigDecimal availableForcedLeaveToCancel = employee.getVacationLeaveTotal().subtract(employee.getRemainingForcedLeave());
+        availableForcedLeaveToCancel = availableForcedLeaveToCancel.signum() == -1
+                ? AppConstants.ZERO
+                : availableForcedLeaveToCancel;
+        leaveResponseDto.setAvailableForcedLeaveToCancel(availableForcedLeaveToCancel);
+        return leaveResponseDto;
+    }
+
+    @Override
+    public LeaveResponseDto leaveRequest(Long id, LeaveRequestDto leaveRequestDto) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id));
+
+        EmployeeDto employeeDto = employeeMapper.toDto(employee);
+        LeaveResponseDto leaveResponseDto = new LeaveResponseDto();
+        leaveResponseDto.setEmployeeDto(employeeDto);
+
+        // TODO: Process of Leave Request
+        return leaveResponseDto;
     }
 
     private EmployeeResponse setEmployeeResponse(Page<Employee> employees) {

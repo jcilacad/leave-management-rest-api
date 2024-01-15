@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e FROM Employee e WHERE " +
@@ -18,4 +19,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Employee> findEmployeesByQuery(String query);
     @Query("SELECT e FROM Employee e WHERE e IN :filteredEmployees")
     Page<Employee> findAllFiltered(List<Employee> filteredEmployees, Pageable pageable);
+    @Query("SELECT e FROM Employee e WHERE " +
+            "e.officialEmail LIKE CONCAT('%', :query, '%') OR " +
+            "e.employeeNumber LIKE CONCAT('%', :query, '%')")
+    Optional<Employee> findEmployeeByEmailOrEmployeeNumber(String query);
 }

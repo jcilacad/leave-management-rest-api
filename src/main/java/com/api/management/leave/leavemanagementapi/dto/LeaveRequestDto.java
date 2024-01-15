@@ -1,7 +1,6 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,15 +16,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class LeaveRequestDto {
     @NotEmpty
-    private String firstName;
-    @NotEmpty
-    private String middleName;
-    @NotEmpty
-    private String lastName;
-    @NotEmpty
-    private String officialEmail;
     private String leaveType;
+    @NotEmpty
     private LocalDate dateFrom;
+    @NotEmpty
     private LocalDate dateTo;
     @Pattern(regexp = "^[1-9]\\d*(\\.\\d+)?$", message = "Provide only a number.")
     private BigDecimal daysRequested;
