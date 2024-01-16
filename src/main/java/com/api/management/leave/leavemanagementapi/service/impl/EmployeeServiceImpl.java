@@ -5,7 +5,6 @@ import com.api.management.leave.leavemanagementapi.entity.Employee;
 import com.api.management.leave.leavemanagementapi.entity.Leave;
 import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
-import com.api.management.leave.leavemanagementapi.mapper.LeaveMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.repository.LeaveRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
@@ -31,7 +30,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private LeaveRepository leaveRepository;
     private EmployeeMapper employeeMapper;
-    private LeaveMapper leaveMapper;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -101,10 +99,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployee(Long id) {
         boolean employee = employeeRepository.existsById(id);
-        if (!employee) {
-            throw new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id);
-        }
-
+        if (!employee) throw new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id);
         employeeRepository.deleteById(id);
     }
 
@@ -141,11 +136,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                             ? AppConstants.ZERO
                             : diffRemForcedAndVacation;
                     employee.setVacationLeaveTotal(diffRemForcedAndVacation);
-                    computeForcedLeave(employee);
                 }
 
                 employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
-                computeForcedLeave(employee);
+                employee.setRemainingForcedLeave(remVacationLeave.compareTo(AppConstants.FIVE) == 1
+                        || remVacationLeave.compareTo(AppConstants.FIVE) == 0
+                        ? AppConstants.FIVE
+                        : remVacationLeave);
                 employee.setRemainingSpecialPrivilegeLeave(AppConstants.THREE);
                 return employee;
             }).collect(Collectors.toList());
@@ -185,7 +182,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         LocalDate dateFrom = leaveRequestDto.getDateFrom();
         LocalDate dateTo = leaveRequestDto.getDateTo();
         BigDecimal daysRequested = leaveRequestDto.getDaysRequested();
-        BigDecimal leaveWithoutPay = leaveRequestDto.getLeaveWithoutPay();
         BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
         BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
         BigDecimal forcedLeave = employee.getRemainingForcedLeave();
@@ -277,13 +273,5 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeResponse.setTotalPages(employees.getTotalPages());
         employeeResponse.setLast(employees.isLast());
         return employeeResponse;
-    }
-
-    private void computeForcedLeave(Employee employee) {
-        BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
-        employee.setRemainingForcedLeave(remVacationLeave.compareTo(AppConstants.FIVE) == 1
-                || remVacationLeave.compareTo(AppConstants.FIVE) == 0
-                ? AppConstants.FIVE
-                : remVacationLeave);
     }
 }
