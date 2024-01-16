@@ -4,7 +4,6 @@ import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
 import com.api.management.leave.leavemanagementapi.entity.Employee;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper {

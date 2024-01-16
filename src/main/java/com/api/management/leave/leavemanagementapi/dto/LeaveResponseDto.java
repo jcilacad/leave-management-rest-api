@@ -1,6 +1,5 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
-import com.api.management.leave.leavemanagementapi.utils.LeaveTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LeaveResponseDto {
+    private String message;
     private EmployeeDto employeeDto;
     private List<String> leaveTypes;
     private BigDecimal availableForcedLeaveToCancel;

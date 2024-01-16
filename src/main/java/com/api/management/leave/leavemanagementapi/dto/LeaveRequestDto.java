@@ -1,6 +1,8 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,12 +19,12 @@ import java.time.LocalDate;
 public class LeaveRequestDto {
     @NotEmpty
     private String leaveType;
-    @NotEmpty
+    @NotNull
     private LocalDate dateFrom;
-    @NotEmpty
+    @NotNull
     private LocalDate dateTo;
-    @Pattern(regexp = "^[1-9]\\d*(\\.\\d+)?$", message = "Provide only a number.")
+    @Digits(integer = 3, fraction = 2, message = "Days requested must be a numeric value with up to two decimal places")
     private BigDecimal daysRequested;
-    @Pattern(regexp = "^[1-9]\\d*(\\.\\d+)?$", message = "Provide only a number.")
+    @Digits(integer = 3, fraction = 2, message = "Leave without pay must be a numeric value with up to two decimal places")
     private BigDecimal leaveWithoutPay;
 }

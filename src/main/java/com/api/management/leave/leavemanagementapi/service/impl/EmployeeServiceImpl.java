@@ -1,13 +1,13 @@
 package com.api.management.leave.leavemanagementapi.service.impl;
 
-import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
-import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
-import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
+import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.entity.Employee;
+import com.api.management.leave.leavemanagementapi.entity.Leave;
 import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
+import com.api.management.leave.leavemanagementapi.mapper.LeaveMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
+import com.api.management.leave.leavemanagementapi.repository.LeaveRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import com.api.management.leave.leavemanagementapi.utils.LeaveTypes;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,9 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
+    private LeaveRepository leaveRepository;
     private EmployeeMapper employeeMapper;
+    private LeaveMapper leaveMapper;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -167,29 +170,98 @@ public class EmployeeServiceImpl implements EmployeeService {
     public LeaveResponseDto getEmployeeByOfficialEmailOrEmployeeNumber(String query) {
         Employee employee = employeeRepository.findEmployeeByEmailOrEmployeeNumber(query)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "query", query));
-        EmployeeDto employeeDto =  employeeMapper.toDto(employee);
+        EmployeeDto employeeDto = employeeMapper.toDto(employee);
         LeaveResponseDto leaveResponseDto = new LeaveResponseDto();
         leaveResponseDto.setEmployeeDto(employeeDto);
-        List<String> leaveTypes = Arrays.stream(LeaveTypes.values()).map(leaveType -> leaveType.getLeave()).collect(Collectors.toList());
-        leaveResponseDto.setLeaveTypes(leaveTypes);
-        BigDecimal availableForcedLeaveToCancel = employee.getVacationLeaveTotal().subtract(employee.getRemainingForcedLeave());
+        return getLeaveResponseDto(employeeDto);
+    }
+
+    @Override
+    @Transactional
+    public LeaveResponseDto leaveRequest(Long id, LeaveRequestDto leaveRequestDto) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id));
+        String leaveType = leaveRequestDto.getLeaveType();
+        LocalDate dateFrom = leaveRequestDto.getDateFrom();
+        LocalDate dateTo = leaveRequestDto.getDateTo();
+        BigDecimal daysRequested = leaveRequestDto.getDaysRequested();
+        BigDecimal leaveWithoutPay = leaveRequestDto.getLeaveWithoutPay();
+        BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
+        BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
+        BigDecimal forcedLeave = employee.getRemainingForcedLeave();
+        BigDecimal specialPrivilege = employee.getRemainingSpecialPrivilegeLeave();
+        if (leaveType.equalsIgnoreCase(LeaveTypes.SICK.getLeave())) {
+            BigDecimal diffSickLeaveDaysRequested = sickLeaveTotal.subtract(daysRequested);
+            if (diffSickLeaveDaysRequested.signum() == -1) {
+                employee.setSickLeaveTotal(AppConstants.ZERO);
+                BigDecimal absoluteOfDifference = diffSickLeaveDaysRequested.abs();
+                BigDecimal diffVacationLeaveAbsoluteDiff = vacationLeaveTotal.subtract(absoluteOfDifference);
+                if (diffVacationLeaveAbsoluteDiff.signum() == -1) {
+                    employee.setVacationLeaveTotal(AppConstants.ZERO);
+                } else {
+                    employee.setVacationLeaveTotal(diffVacationLeaveAbsoluteDiff);
+                }
+
+            } else {
+                employee.setSickLeaveTotal(diffSickLeaveDaysRequested);
+            }
+
+        } else if (leaveType.equalsIgnoreCase(LeaveTypes.VACATION.getLeave())) {
+            BigDecimal diffVacationLeaveDaysRequested = vacationLeaveTotal.subtract(daysRequested);
+            if (diffVacationLeaveDaysRequested.compareTo(AppConstants.FIVE) == -1) {
+                employee.setRemainingForcedLeave(diffVacationLeaveDaysRequested);
+                if (diffVacationLeaveDaysRequested.signum() == -1) {
+                    employee.setRemainingForcedLeave(AppConstants.ZERO);
+                    employee.setVacationLeaveTotal(AppConstants.ZERO);
+                } else {
+                    employee.setVacationLeaveTotal(diffVacationLeaveDaysRequested);
+                }
+            }
+        } else if (leaveType.equalsIgnoreCase(LeaveTypes.FORCED.getLeave())) {
+            BigDecimal diffForcedLeaveDaysRequested = forcedLeave.subtract(daysRequested);
+            BigDecimal diffVacationLeaveDaysRequested = vacationLeaveTotal.subtract(daysRequested);
+            employee.setRemainingForcedLeave(diffForcedLeaveDaysRequested.signum() == -1
+                    ? AppConstants.ZERO
+                    : diffForcedLeaveDaysRequested);
+            employee.setVacationLeaveTotal(diffVacationLeaveDaysRequested.signum() == -1
+                    ? AppConstants.ZERO
+                    : diffVacationLeaveDaysRequested);
+
+        } else if (leaveType.equalsIgnoreCase(LeaveTypes.SPECIAL_PRIVILEGE.getLeave())) {
+            BigDecimal diffSpecialPrivilegeLeaveDaysRequested = specialPrivilege.subtract(daysRequested);
+            employee.setRemainingSpecialPrivilegeLeave(diffSpecialPrivilegeLeaveDaysRequested.signum() == -1
+                    ? AppConstants.ZERO
+                    : diffSpecialPrivilegeLeaveDaysRequested);
+        }
+
+        Leave leave = new Leave();
+        leave.setEmployee(employee);
+        leave.setForcedLeave(forcedLeave);
+        leave.setSickLeave(sickLeaveTotal);
+        leave.setSpecialPrivilegeLeave(specialPrivilege);
+        leave.setVacationLeave(vacationLeaveTotal);
+        leave.setLeaveType(leaveType);
+        leave.setAppliedFrom(dateFrom.toString());
+        leave.setAppliedTo(dateTo.toString());
+        leave.setDaysRequested(daysRequested);
+        leaveRepository.saveAndFlush(leave);
+        Employee updatedEmployee = employeeRepository.save(employee);
+        EmployeeDto employeeDto = employeeMapper.toDto(updatedEmployee);
+        return getLeaveResponseDto(employeeDto);
+    }
+
+    private static LeaveResponseDto getLeaveResponseDto(EmployeeDto employeeDto) {
+        LeaveResponseDto leaveResponseDto = new LeaveResponseDto();
+        leaveResponseDto.setMessage("Leave request processed successfully.");
+        leaveResponseDto.setEmployeeDto(employeeDto);
+        leaveResponseDto.setLeaveTypes(Arrays.stream(LeaveTypes.values())
+                .map(leaveType -> leaveType.getLeave())
+                .collect(Collectors.toList()));
+        BigDecimal availableForcedLeaveToCancel = employeeDto.getVacationLeaveTotal().subtract(employeeDto.getRemainingForcedLeave());
         availableForcedLeaveToCancel = availableForcedLeaveToCancel.signum() == -1
                 ? AppConstants.ZERO
                 : availableForcedLeaveToCancel;
         leaveResponseDto.setAvailableForcedLeaveToCancel(availableForcedLeaveToCancel);
-        return leaveResponseDto;
-    }
-
-    @Override
-    public LeaveResponseDto leaveRequest(Long id, LeaveRequestDto leaveRequestDto) {
-        Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id));
-
-        EmployeeDto employeeDto = employeeMapper.toDto(employee);
-        LeaveResponseDto leaveResponseDto = new LeaveResponseDto();
-        leaveResponseDto.setEmployeeDto(employeeDto);
-
-        // TODO: Process of Leave Request
         return leaveResponseDto;
     }
 

@@ -1,8 +1,5 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
-import com.api.management.leave.leavemanagementapi.entity.Leave;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -40,6 +37,6 @@ public class EmployeeDto {
     private BigDecimal leaveWithoutPayTotal;
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
-    private Set<Leave> leaves;
+    private Set<LeaveDto> leaves;
     private String message;
 }
