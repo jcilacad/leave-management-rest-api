@@ -78,6 +78,6 @@ public class EmployeeController {
     public ResponseEntity<LeaveResponseDto> leaveRequest (
             @PathVariable Long id,
             @RequestBody @Valid LeaveRequestDto leaveRequestDto) {
-        return ResponseEntity.ok(employeeService.leaveRequest(id, leaveRequestDto));
+        return new ResponseEntity<>(employeeService.leaveRequest(id, leaveRequestDto), HttpStatus.CREATED);
     }
 }

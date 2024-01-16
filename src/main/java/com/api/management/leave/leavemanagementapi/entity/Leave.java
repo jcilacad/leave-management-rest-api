@@ -23,7 +23,7 @@ public class Leave {
     private String leaveType;
     private String appliedFrom;
     private String appliedTo;
-    private String daysRequested;
+    private BigDecimal daysRequested;
     private BigDecimal vacationLeave;
     private BigDecimal sickLeave;
     private BigDecimal specialPrivilegeLeave;
@@ -32,7 +32,7 @@ public class Leave {
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateUpdated;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id", nullable = false)
     private Employee employee;
 }
