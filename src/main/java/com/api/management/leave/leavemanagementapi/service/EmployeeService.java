@@ -2,8 +2,6 @@ package com.api.management.leave.leavemanagementapi.service;
 
 import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
 import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
-import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
 
 public interface EmployeeService {
     EmployeeDto createEmployee(EmployeeDto employeeDto);
@@ -14,6 +12,4 @@ public interface EmployeeService {
     void deleteEmployee(Long id);
     EmployeeDto excludeEmployeeForcedLeave(Long id, boolean excluded);
     EmployeeResponse resetLeaves(boolean reset, int pageNo, int pageSize, String sortBy, String sortDir);
-    LeaveResponseDto getEmployeeByOfficialEmailOrEmployeeNumber(String query);
-    LeaveResponseDto leaveRequest(Long id, LeaveRequestDto leaveRequestDto);
 }

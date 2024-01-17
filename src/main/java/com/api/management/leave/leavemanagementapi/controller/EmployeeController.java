@@ -68,16 +68,4 @@ public class EmployeeController {
             @RequestParam(name = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir) {
         return ResponseEntity.ok(employeeService.resetLeaves(reset, pageNo, pageSize, sortBy, sortDir));
     }
-
-    @GetMapping("/leaves")
-    public ResponseEntity<LeaveResponseDto> getEmployeeByOfficialEmailOrEmployeeNumber(@RequestParam(name = "query", required = false) String query) {
-        return ResponseEntity.ok(employeeService.getEmployeeByOfficialEmailOrEmployeeNumber(query));
-    }
-
-    @PostMapping("/{id}/leaves")
-    public ResponseEntity<LeaveResponseDto> leaveRequest (
-            @PathVariable Long id,
-            @RequestBody @Valid LeaveRequestDto leaveRequestDto) {
-        return new ResponseEntity<>(employeeService.leaveRequest(id, leaveRequestDto), HttpStatus.CREATED);
-    }
 }
