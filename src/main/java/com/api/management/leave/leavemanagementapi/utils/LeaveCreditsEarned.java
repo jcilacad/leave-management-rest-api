@@ -1,5 +1,8 @@
 package com.api.management.leave.leavemanagementapi.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public enum LeaveCreditsEarned {
     LCE1(30.00, 0.00, 1.250),
     LCE2(29.50, 0.50, 1.229),
@@ -63,25 +66,25 @@ public enum LeaveCreditsEarned {
     LCE60(0.50, 29.50, .021),
     LCE61(0.00, 30.00, .000);
 
-    private final Double daysPresent;
-    private final Double leaveWithoutPay;
-    private final Double LeaveCreditsEarned;
+    private final double daysPresent;
+    private final double leaveWithoutPay;
+    private final double LeaveCreditsEarned;
 
-    LeaveCreditsEarned(Double daysPresent, Double leaveWithoutPay, Double leaveCreditsEarned) {
+    LeaveCreditsEarned(double daysPresent, double leaveWithoutPay, double leaveCreditsEarned) {
         this.daysPresent = daysPresent;
         this.leaveWithoutPay = leaveWithoutPay;
         this.LeaveCreditsEarned = leaveCreditsEarned;
     }
 
-    public Double getDaysPresent() {
+    public double getDaysPresent() {
         return daysPresent;
     }
 
-    public Double getLeaveWithoutPay() {
+    public double getLeaveWithoutPay() {
         return leaveWithoutPay;
     }
 
-    public Double getLeaveCreditsEarned() {
+    public double getLeaveCreditsEarned() {
         return LeaveCreditsEarned;
     }
 
