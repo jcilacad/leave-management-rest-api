@@ -10,19 +10,19 @@ public enum HourConversion {
     SEVEN(7, .875),
     EIGHT(8, 1.000);
 
-    private final Integer hour;
-    private final Double equivalentDay;
+    private final int hour;
+    private final double equivalentDay;
 
-    HourConversion(Integer hour, Double equivalentDay) {
+    HourConversion(int hour, double equivalentDay) {
         this.hour = hour;
         this.equivalentDay = equivalentDay;
     }
 
-    public Integer getHour() {
+    public int getHour() {
         return hour;
     }
 
-    public Double getEquivalentDay() {
+    public double getEquivalentDay() {
         return equivalentDay;
     }
 

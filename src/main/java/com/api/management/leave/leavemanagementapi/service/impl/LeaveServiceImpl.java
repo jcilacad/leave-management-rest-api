@@ -1,8 +1,6 @@
 package com.api.management.leave.leavemanagementapi.service.impl;
 
-import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
+import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.entity.Employee;
 import com.api.management.leave.leavemanagementapi.entity.Leave;
 import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
@@ -10,14 +8,14 @@ import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.repository.LeaveRepository;
 import com.api.management.leave.leavemanagementapi.service.LeaveService;
-import com.api.management.leave.leavemanagementapi.utils.AppConstants;
-import com.api.management.leave.leavemanagementapi.utils.LeaveTypes;
+import com.api.management.leave.leavemanagementapi.utils.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,7 +109,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     private static LeaveResponseDto getLeaveResponseDto(EmployeeDto employeeDto) {
         LeaveResponseDto leaveResponseDto = new LeaveResponseDto();
-        leaveResponseDto.setMessage("Leave request processed successfully.");
+        leaveResponseDto.setMessage("Success.");
         leaveResponseDto.setEmployeeDto(employeeDto);
         leaveResponseDto.setLeaveTypes(Arrays.stream(LeaveTypes.values())
                 .map(leaveType -> leaveType.getLeave())
@@ -121,6 +119,43 @@ public class LeaveServiceImpl implements LeaveService {
                 ? AppConstants.ZERO
                 : availableForcedLeaveToCancel;
         leaveResponseDto.setAvailableForcedLeaveToCancel(availableForcedLeaveToCancel);
+        return leaveResponseDto;
+    }
+
+    @Override
+    public LeaveResponseDto getInfoForComputation(String query) {
+        LeaveResponseDto leaveResponseDto = this.getEmployeeByOfficialEmailOrEmployeeNumber(query);
+        List<HourConversion> hourConversions = List.of(HourConversion.values());
+        List<MinuteConversion> minuteConversions = List.of(MinuteConversion.values());
+        List<LeaveCreditsEarned> leaveCreditsEarned = List.of(LeaveCreditsEarned.values());
+        List<HourConversionDto> hourConversionDto = hourConversions.stream()
+                .map(hourConversion -> {
+                    HourConversionDto hourConversionList = new HourConversionDto();
+                    hourConversionList.setHour(hourConversion.getHour());
+                    hourConversionList.setEquivalentDay(hourConversion.getEquivalentDay());
+                    return hourConversionList;
+                })
+                .collect(Collectors.toList());
+        List<MinuteConversionDto> minuteConversionDto = minuteConversions.stream()
+                .map(minuteConversion -> {
+                    MinuteConversionDto minuteConversionList = new MinuteConversionDto();
+                    minuteConversionList.setMinute(minuteConversion.getMinute());
+                    minuteConversionList.setEquivalentDay(minuteConversion.getEquivalentDay());
+                    return minuteConversionList;
+                })
+                .collect(Collectors.toList());
+        List<LeaveCreditsEarnedDto> leaveCreditsEarnedDto = leaveCreditsEarned.stream()
+                .map(leaveCredits -> {
+                    LeaveCreditsEarnedDto leaveCreditsEarnedDtoList = new LeaveCreditsEarnedDto();
+                    leaveCreditsEarnedDtoList.setLeaveCreditsEarned(leaveCredits.getLeaveCreditsEarned());
+                    leaveCreditsEarnedDtoList.setLeaveWithoutPay(leaveCredits.getLeaveWithoutPay());
+                    leaveCreditsEarnedDtoList.setDaysPresent(leaveCredits.getDaysPresent());
+                    return leaveCreditsEarnedDtoList;
+                })
+                .collect(Collectors.toList());
+        leaveResponseDto.setHourConversions(hourConversionDto);
+        leaveResponseDto.setMinuteConversions(minuteConversionDto);
+        leaveResponseDto.setLeaveCreditsEarned(leaveCreditsEarnedDto);
         return leaveResponseDto;
     }
 }

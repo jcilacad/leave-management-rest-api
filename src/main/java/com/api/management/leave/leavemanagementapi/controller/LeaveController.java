@@ -15,15 +15,22 @@ import org.springframework.web.bind.annotation.*;
 public class LeaveController {
     private LeaveService leaveService;
 
-    @GetMapping("/leaves")
-    public ResponseEntity<LeaveResponseDto> getEmployeeByOfficialEmailOrEmployeeNumber(@RequestParam(name = "query", required = false) String query) {
+    @GetMapping
+    public ResponseEntity<LeaveResponseDto> getEmployeeByOfficialEmailOrEmployeeNumber(
+            @RequestParam(name = "query", required = false) String query) {
         return ResponseEntity.ok(leaveService.getEmployeeByOfficialEmailOrEmployeeNumber(query));
     }
 
-    @PostMapping("/{id}/leaves")
+    @PostMapping
     public ResponseEntity<LeaveResponseDto> leaveRequest (
-            @PathVariable Long id,
+            @RequestParam(name = "employeeId") Long employeeId,
             @RequestBody @Valid LeaveRequestDto leaveRequestDto) {
-        return new ResponseEntity<>(leaveService.leaveRequest(id, leaveRequestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(leaveService.leaveRequest(employeeId, leaveRequestDto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/compute")
+    public ResponseEntity<LeaveResponseDto> getInfoForComputation (
+            @RequestParam(name = "query") String query) {
+        return ResponseEntity.ok(leaveService.getInfoForComputation(query));
     }
 }

@@ -62,19 +62,19 @@ public enum MinuteConversion {
     FIFTY_NINE(59, .123),
     SIXTY(60, .125);
 
-    private final Integer minute;
-    private final Double equivalentDay;
+    private final int minute;
+    private final double equivalentDay;
 
-    MinuteConversion(Integer minute, Double equivalentDay) {
+    MinuteConversion(int minute, double equivalentDay) {
         this.minute = minute;
         this.equivalentDay = equivalentDay;
     }
 
-    public Integer getMinute() {
+    public int getMinute() {
         return minute;
     }
 
-    public Double getEquivalentDay() {
+    public double getEquivalentDay() {
         return equivalentDay;
     }
 

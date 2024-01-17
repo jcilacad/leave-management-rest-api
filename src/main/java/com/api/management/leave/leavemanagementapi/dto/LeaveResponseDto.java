@@ -1,5 +1,8 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
+import com.api.management.leave.leavemanagementapi.utils.HourConversion;
+import com.api.management.leave.leavemanagementapi.utils.LeaveCreditsEarned;
+import com.api.management.leave.leavemanagementapi.utils.MinuteConversion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +19,8 @@ public class LeaveResponseDto {
     private String message;
     private EmployeeDto employeeDto;
     private List<String> leaveTypes;
+    private List<HourConversionDto> hourConversions;
+    private List<MinuteConversionDto> minuteConversions;
+    private List<LeaveCreditsEarnedDto> leaveCreditsEarned;
     private BigDecimal availableForcedLeaveToCancel;
 }

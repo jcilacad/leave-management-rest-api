@@ -6,4 +6,5 @@ import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
 public interface LeaveService {
     LeaveResponseDto getEmployeeByOfficialEmailOrEmployeeNumber(String query);
     LeaveResponseDto leaveRequest(Long id, LeaveRequestDto leaveRequestDto);
+    LeaveResponseDto getInfoForComputation(String query);
 }
