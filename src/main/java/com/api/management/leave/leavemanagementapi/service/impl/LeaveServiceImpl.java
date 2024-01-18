@@ -158,4 +158,25 @@ public class LeaveServiceImpl implements LeaveService {
         leaveResponseDto.setLeaveCreditsEarned(leaveCreditsEarnedDto);
         return leaveResponseDto;
     }
+
+    @Override
+    public LeaveResponseDto computeLeaveCredits(Long employeeId, LeaveComputationDto leaveComputationDto) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+        LeaveCreditsEarnedDto leaveCreditsEarnedDto = leaveComputationDto.getLeaveCreditsEarnedDto();
+        HourConversionDto hourConversionDto = leaveComputationDto.getHourConversionDto();
+        MinuteConversionDto minuteConversionDto = leaveComputationDto.getMinuteConversionDto();
+        double leaveCreditsEarned = leaveCreditsEarnedDto.getLeaveCreditsEarned();
+        BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
+        BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
+        BigDecimal remainingForcedLeave = employee.getRemainingForcedLeave();
+        sickLeaveTotal = sickLeaveTotal.add(BigDecimal.valueOf(leaveCreditsEarned));
+        vacationLeaveTotal = vacationLeaveTotal.add(BigDecimal.valueOf(leaveCreditsEarned));
+        remainingForcedLeave = remainingForcedLeave.add(BigDecimal.valueOf(leaveCreditsEarned));
+        employee.setSickLeaveTotal(sickLeaveTotal);
+        employee.setVacationLeaveTotal(vacationLeaveTotal);
+
+        // TODO: Leave credits computation
+        return null;
+    }
 }
