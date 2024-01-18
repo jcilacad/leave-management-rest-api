@@ -1,7 +1,6 @@
 package com.api.management.leave.leavemanagementapi.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
 public enum LeaveCreditsEarned {
     LCE1(30.00, 0.00, 1.250),
