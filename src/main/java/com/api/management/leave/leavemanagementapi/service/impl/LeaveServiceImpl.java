@@ -166,13 +166,13 @@ public class LeaveServiceImpl implements LeaveService {
         LeaveCreditsEarnedDto leaveCreditsEarnedDto = leaveComputationDto.getLeaveCreditsEarnedDto();
         HourConversionDto hourConversionDto = leaveComputationDto.getHourConversionDto();
         MinuteConversionDto minuteConversionDto = leaveComputationDto.getMinuteConversionDto();
-        double leaveCreditsEarned = leaveCreditsEarnedDto.getLeaveCreditsEarned();
+        BigDecimal leaveCreditsEarned = leaveCreditsEarnedDto.getLeaveCreditsEarned();
         BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
         BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
         BigDecimal remainingForcedLeave = employee.getRemainingForcedLeave();
-        sickLeaveTotal = sickLeaveTotal.add(BigDecimal.valueOf(leaveCreditsEarned));
-        vacationLeaveTotal = vacationLeaveTotal.add(BigDecimal.valueOf(leaveCreditsEarned));
-        remainingForcedLeave = remainingForcedLeave.add(BigDecimal.valueOf(leaveCreditsEarned));
+        sickLeaveTotal = sickLeaveTotal.add(leaveCreditsEarned);
+        vacationLeaveTotal = vacationLeaveTotal.add(leaveCreditsEarned);
+        remainingForcedLeave = remainingForcedLeave.add(leaveCreditsEarned);
         employee.setSickLeaveTotal(sickLeaveTotal);
         employee.setVacationLeaveTotal(vacationLeaveTotal);
 

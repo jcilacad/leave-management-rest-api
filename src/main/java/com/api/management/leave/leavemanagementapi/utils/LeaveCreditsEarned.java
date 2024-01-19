@@ -3,87 +3,87 @@ package com.api.management.leave.leavemanagementapi.utils;
 import java.math.BigDecimal;
 
 public enum LeaveCreditsEarned {
-    LCE1(30.00, 0.00, 1.250),
-    LCE2(29.50, 0.50, 1.229),
-    LCE3(29.00, 1.00, 1.208),
-    LCE4(28.50, 1.50, 1.188),
-    LCE5(28.00, 2.00, 1.167),
-    LCE6(27.50, 2.50, 1.146),
-    LCE7(27.00, 3.00, 1.125),
-    LCE8(26.50, 3.50, 1.104),
-    LCE9(26.00, 4.00, 1.083),
-    LCE10(25.50, 4.50, 1.063),
-    LCE11(25.00, 5.00, 1.042),
-    LCE12(24.50, 5.50, 1.021),
-    LCE13(24.00, 6.00, 1.000),
-    LCE14(23.50, 6.50, .979),
-    LCE15(23.00, 7.00, .958),
-    LCE16(22.50, 7.50, .938),
-    LCE17(22.00, 8.00, .917),
-    LCE18(21.50, 8.50, .896),
-    LCE19(21.00, 9.00, .875),
-    LCE20(20.50, 9.50, .854),
-    LCE21(20.00, 10.00, .833),
-    LCE22(19.50, 10.50, .813),
-    LCE23(19.00, 11.00, .792),
-    LCE24(18.50, 11.50, .771),
-    LCE25(18.00, 12.00, .750),
-    LCE26(17.50, 12.50, .729),
-    LCE27(17.00, 13.00, .708),
-    LCE28(16.50, 13.50, .687),
-    LCE29(16.00, 14.00, .667),
-    LCE30(15.50, 14.50, .646),
-    LCE31(15.00, 15.00, .625),
-    LCE32(14.50, 15.50, .604),
-    LCE33(14.00, 16.00, .583),
-    LCE34(13.50, 16.50, .562),
-    LCE35(13.00, 17.00, .542),
-    LCE36(12.50, 17.50, .521),
-    LCE37(12.00, 18.00, .500),
-    LCE38(11.50, 18.50, .479),
-    LCE39(11.00, 19.00, .458),
-    LCE40(10.50, 19.50, .437),
-    LCE41(10.00, 20.00, .417),
-    LCE42(9.50, 20.50, .396),
-    LCE43(9.00, 21.00, .375),
-    LCE44(8.50, 21.50, .354),
-    LCE45(8.00, 22.00, .333),
-    LCE46(7.50, 22.50, .312),
-    LCE47(7.00, 23.00, .292),
-    LCE48(6.50, 23.50, .271),
-    LCE49(6.00, 24.00, .250),
-    LCE50(5.50, 24.50, .229),
-    LCE51(5.00, 25.00, .208),
-    LCE52(4.50, 25.50, .187),
-    LCE53(4.00, 26.00, .167),
-    LCE54(3.50, 26.50, .146),
-    LCE55(3.00, 27.00, .125),
-    LCE56(2.50, 27.50, .104),
-    LCE57(2.00, 28.00, .083),
-    LCE58(1.50, 28.50, .062),
-    LCE59(1.00, 29.00, .042),
-    LCE60(0.50, 29.50, .021),
-    LCE61(0.00, 30.00, .000);
+    LCE1(BigDecimal.valueOf(30.00), BigDecimal.valueOf(0.00), BigDecimal.valueOf(1.250)),
+    LCE2(BigDecimal.valueOf(29.50), BigDecimal.valueOf(0.50), BigDecimal.valueOf(1.229)),
+    LCE3(BigDecimal.valueOf(29.00), BigDecimal.valueOf(1.00), BigDecimal.valueOf(1.208)),
+    LCE4(BigDecimal.valueOf(28.50), BigDecimal.valueOf(1.50), BigDecimal.valueOf(1.188)),
+    LCE5(BigDecimal.valueOf(28.00), BigDecimal.valueOf(2.00), BigDecimal.valueOf(1.167)),
+    LCE6(BigDecimal.valueOf(27.50), BigDecimal.valueOf(2.50), BigDecimal.valueOf(1.146)),
+    LCE7(BigDecimal.valueOf(27.00), BigDecimal.valueOf(3.00), BigDecimal.valueOf(1.125)),
+    LCE8(BigDecimal.valueOf(26.50), BigDecimal.valueOf(3.50), BigDecimal.valueOf(1.104)),
+    LCE9(BigDecimal.valueOf(26.00), BigDecimal.valueOf(4.00), BigDecimal.valueOf(1.083)),
+    LCE10(BigDecimal.valueOf(25.50), BigDecimal.valueOf(4.50), BigDecimal.valueOf(1.063)),
+    LCE11(BigDecimal.valueOf(25.00), BigDecimal.valueOf(5.00), BigDecimal.valueOf(1.042)),
+    LCE12(BigDecimal.valueOf(24.50), BigDecimal.valueOf(5.50), BigDecimal.valueOf(1.021)),
+    LCE13(BigDecimal.valueOf(24.00), BigDecimal.valueOf(6.00), BigDecimal.valueOf(1.000)),
+    LCE14(BigDecimal.valueOf(23.50), BigDecimal.valueOf(6.50), BigDecimal.valueOf(.979)),
+    LCE15(BigDecimal.valueOf(23.00), BigDecimal.valueOf(7.00), BigDecimal.valueOf(.958)),
+    LCE16(BigDecimal.valueOf(22.50), BigDecimal.valueOf(7.50), BigDecimal.valueOf(.938)),
+    LCE17(BigDecimal.valueOf(22.00), BigDecimal.valueOf(8.00), BigDecimal.valueOf(.917)),
+    LCE18(BigDecimal.valueOf(21.50), BigDecimal.valueOf(8.50), BigDecimal.valueOf(.896)),
+    LCE19(BigDecimal.valueOf(21.00), BigDecimal.valueOf(9.00), BigDecimal.valueOf(.875)),
+    LCE20(BigDecimal.valueOf(20.50), BigDecimal.valueOf(9.50), BigDecimal.valueOf(.854)),
+    LCE21(BigDecimal.valueOf(20.00), BigDecimal.valueOf(10.00), BigDecimal.valueOf(.833)),
+    LCE22(BigDecimal.valueOf(19.50), BigDecimal.valueOf(10.50), BigDecimal.valueOf(.813)),
+    LCE23(BigDecimal.valueOf(19.00), BigDecimal.valueOf(11.00), BigDecimal.valueOf(.792)),
+    LCE24(BigDecimal.valueOf(18.50), BigDecimal.valueOf(11.50), BigDecimal.valueOf(.771)),
+    LCE25(BigDecimal.valueOf(18.00), BigDecimal.valueOf(12.00), BigDecimal.valueOf(.750)),
+    LCE26(BigDecimal.valueOf(17.50), BigDecimal.valueOf(12.50), BigDecimal.valueOf(.729)),
+    LCE27(BigDecimal.valueOf(17.00), BigDecimal.valueOf(13.00), BigDecimal.valueOf(.708)),
+    LCE28(BigDecimal.valueOf(16.50), BigDecimal.valueOf(13.50), BigDecimal.valueOf(.687)),
+    LCE29(BigDecimal.valueOf(16.00), BigDecimal.valueOf(14.00), BigDecimal.valueOf(.667)),
+    LCE30(BigDecimal.valueOf(15.50), BigDecimal.valueOf(14.50), BigDecimal.valueOf(.646)),
+    LCE31(BigDecimal.valueOf(15.00), BigDecimal.valueOf(15.00), BigDecimal.valueOf(.625)),
+    LCE32(BigDecimal.valueOf(14.50), BigDecimal.valueOf(15.50), BigDecimal.valueOf(.604)),
+    LCE33(BigDecimal.valueOf(14.00), BigDecimal.valueOf(16.00), BigDecimal.valueOf(.583)),
+    LCE34(BigDecimal.valueOf(13.50), BigDecimal.valueOf(16.50), BigDecimal.valueOf(.562)),
+    LCE35(BigDecimal.valueOf(13.00), BigDecimal.valueOf(17.00), BigDecimal.valueOf(.542)),
+    LCE36(BigDecimal.valueOf(12.50), BigDecimal.valueOf(17.50), BigDecimal.valueOf(.521)),
+    LCE37(BigDecimal.valueOf(12.00), BigDecimal.valueOf(18.00), BigDecimal.valueOf(.500)),
+    LCE38(BigDecimal.valueOf(11.50), BigDecimal.valueOf(18.50), BigDecimal.valueOf(.479)),
+    LCE39(BigDecimal.valueOf(11.00), BigDecimal.valueOf(19.00), BigDecimal.valueOf(.458)),
+    LCE40(BigDecimal.valueOf(10.50), BigDecimal.valueOf(19.50), BigDecimal.valueOf(.437)),
+    LCE41(BigDecimal.valueOf(10.00), BigDecimal.valueOf(20.00), BigDecimal.valueOf(.417)),
+    LCE42(BigDecimal.valueOf(9.50), BigDecimal.valueOf(20.50), BigDecimal.valueOf(.396)),
+    LCE43(BigDecimal.valueOf(9.00), BigDecimal.valueOf(21.00), BigDecimal.valueOf(.375)),
+    LCE44(BigDecimal.valueOf(8.50), BigDecimal.valueOf(21.50), BigDecimal.valueOf(.354)),
+    LCE45(BigDecimal.valueOf(8.00), BigDecimal.valueOf(22.00), BigDecimal.valueOf(.333)),
+    LCE46(BigDecimal.valueOf(7.50), BigDecimal.valueOf(22.50), BigDecimal.valueOf(.312)),
+    LCE47(BigDecimal.valueOf(7.00), BigDecimal.valueOf(23.00), BigDecimal.valueOf(.292)),
+    LCE48(BigDecimal.valueOf(6.50), BigDecimal.valueOf(23.50), BigDecimal.valueOf(.271)),
+    LCE49(BigDecimal.valueOf(6.00), BigDecimal.valueOf(24.00), BigDecimal.valueOf(.250)),
+    LCE50(BigDecimal.valueOf(5.50), BigDecimal.valueOf(24.50), BigDecimal.valueOf(.229)),
+    LCE51(BigDecimal.valueOf(5.00), BigDecimal.valueOf(25.00), BigDecimal.valueOf(.208)),
+    LCE52(BigDecimal.valueOf(4.50), BigDecimal.valueOf(25.50), BigDecimal.valueOf(.187)),
+    LCE53(BigDecimal.valueOf(4.00), BigDecimal.valueOf(26.00), BigDecimal.valueOf(.167)),
+    LCE54(BigDecimal.valueOf(3.50), BigDecimal.valueOf(26.50), BigDecimal.valueOf(.146)),
+    LCE55(BigDecimal.valueOf(3.00), BigDecimal.valueOf(27.00), BigDecimal.valueOf(.125)),
+    LCE56(BigDecimal.valueOf(2.50), BigDecimal.valueOf(27.50), BigDecimal.valueOf(.104)),
+    LCE57(BigDecimal.valueOf(2.00), BigDecimal.valueOf(28.00), BigDecimal.valueOf(.083)),
+    LCE58(BigDecimal.valueOf(1.50), BigDecimal.valueOf(28.50), BigDecimal.valueOf(.062)),
+    LCE59(BigDecimal.valueOf(1.00), BigDecimal.valueOf(29.00), BigDecimal.valueOf(.042)),
+    LCE60(BigDecimal.valueOf(0.50), BigDecimal.valueOf(29.50), BigDecimal.valueOf(.021)),
+    LCE61(BigDecimal.valueOf(0.00), BigDecimal.valueOf(30.00), BigDecimal.valueOf(.000));
 
-    private final double daysPresent;
-    private final double leaveWithoutPay;
-    private final double LeaveCreditsEarned;
+    private final BigDecimal daysPresent;
+    private final BigDecimal leaveWithoutPay;
+    private final BigDecimal LeaveCreditsEarned;
 
-    LeaveCreditsEarned(double daysPresent, double leaveWithoutPay, double leaveCreditsEarned) {
+    LeaveCreditsEarned(BigDecimal daysPresent, BigDecimal leaveWithoutPay, BigDecimal leaveCreditsEarned) {
         this.daysPresent = daysPresent;
         this.leaveWithoutPay = leaveWithoutPay;
         this.LeaveCreditsEarned = leaveCreditsEarned;
     }
 
-    public double getDaysPresent() {
+    public BigDecimal getDaysPresent() {
         return daysPresent;
     }
 
-    public double getLeaveWithoutPay() {
+    public BigDecimal getLeaveWithoutPay() {
         return leaveWithoutPay;
     }
 
-    public double getLeaveCreditsEarned() {
+    public BigDecimal getLeaveCreditsEarned() {
         return LeaveCreditsEarned;
     }
 

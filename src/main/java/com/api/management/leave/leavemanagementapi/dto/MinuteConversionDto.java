@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class MinuteConversionDto {
     private int minute;
-    private double equivalentDay;
+    private BigDecimal equivalentDay;
 }
