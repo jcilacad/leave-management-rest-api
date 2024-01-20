@@ -39,10 +39,10 @@ public class Employee {
     private BigDecimal vacationLeaveTotal;
     private BigDecimal sickLeaveTotal;
     private BigDecimal leaveWithoutPayTotal;
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Leave> leaves;
     @CreationTimestamp
     private LocalDateTime dateCreated;
     @UpdateTimestamp
     private LocalDateTime dateUpdated;
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Leave> leaves;
 }

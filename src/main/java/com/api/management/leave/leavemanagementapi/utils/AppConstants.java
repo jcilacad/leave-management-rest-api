@@ -16,5 +16,6 @@ public class AppConstants {
     public static final BigDecimal ZERO = BigDecimal.valueOf(0.000);
     public static final BigDecimal THREE = BigDecimal.valueOf(3.00);
     public static final BigDecimal FIVE = BigDecimal.valueOf(5.00);
+    public static final BigDecimal LEAVE_PER_HOUR = BigDecimal.valueOf(0.125);
     public static final String EMPLOYEE = "Employee";
 }
