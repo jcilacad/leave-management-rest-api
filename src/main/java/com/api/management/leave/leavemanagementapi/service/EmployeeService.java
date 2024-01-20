@@ -11,5 +11,5 @@ public interface EmployeeService {
     EmployeeDto updateEmployee(EmployeeDto employeeDto, Long id);
     void deleteEmployee(Long id);
     EmployeeDto excludeEmployeeForcedLeave(Long id, boolean excluded);
-    EmployeeResponse resetLeaves(boolean reset, int pageNo, int pageSize, String sortBy, String sortDir);
+    EmployeeResponse resetLeaves(int pageNo, int pageSize, String sortBy, String sortDir);
 }

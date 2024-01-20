@@ -5,7 +5,6 @@ import com.api.management.leave.leavemanagementapi.entity.Employee;
 import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
-import com.api.management.leave.leavemanagementapi.repository.LeaveRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
-    private LeaveRepository leaveRepository;
     private EmployeeMapper employeeMapper;
 
     @Override
@@ -121,8 +119,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeResponse resetLeaves(boolean reset, int pageNo, int pageSize, String sortBy, String sortDir) {
-        if (reset) {
+    public EmployeeResponse resetLeaves(int pageNo, int pageSize, String sortBy, String sortDir) {
             List<Employee> employees = employeeRepository.findAll().stream().map(employee -> {
                 BigDecimal remForcedLeave = employee.getRemainingForcedLeave();
                 BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
@@ -151,12 +148,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             EmployeeResponse response = setEmployeeResponse(employeePage);
             response.setMessage("Employee leaves successfully reset.");
             return response;
-        } else {
-            EmployeeResponse response = this.getAllEmployees(pageNo, pageSize, sortBy, sortDir);
-            response.setMessage("Employee leaves failed to reset.");
-            return response;
-        }
-
     }
 
     private EmployeeResponse setEmployeeResponse(Page<Employee> employees) {

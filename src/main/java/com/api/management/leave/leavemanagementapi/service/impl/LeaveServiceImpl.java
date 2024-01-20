@@ -10,7 +10,10 @@ import com.api.management.leave.leavemanagementapi.repository.LeaveRepository;
 import com.api.management.leave.leavemanagementapi.service.LeaveService;
 import com.api.management.leave.leavemanagementapi.utils.*;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class LeaveServiceImpl implements LeaveService {
+    private static Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
     private EmployeeRepository employeeRepository;
     private LeaveRepository leaveRepository;
     private EmployeeMapper employeeMapper;
@@ -38,7 +42,7 @@ public class LeaveServiceImpl implements LeaveService {
     @Override
     public LeaveResponseDto leaveRequest(Long id, LeaveRequestDto leaveRequestDto) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "Id", id));
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "id", id));
         String leaveType = leaveRequestDto.getLeaveType();
         LocalDate dateFrom = leaveRequestDto.getDateFrom();
         LocalDate dateTo = leaveRequestDto.getDateTo();
@@ -112,7 +116,7 @@ public class LeaveServiceImpl implements LeaveService {
         leaveResponseDto.setMessage("Success.");
         leaveResponseDto.setEmployeeDto(employeeDto);
         leaveResponseDto.setLeaveTypes(Arrays.stream(LeaveTypes.values())
-                .map(leaveType -> leaveType.getLeave())
+                .map(LeaveTypes::getLeave)
                 .collect(Collectors.toList()));
         BigDecimal availableForcedLeaveToCancel = employeeDto.getVacationLeaveTotal().subtract(employeeDto.getRemainingForcedLeave());
         availableForcedLeaveToCancel = availableForcedLeaveToCancel.signum() == -1
@@ -160,23 +164,44 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     @Override
+    @Transactional
     public LeaveResponseDto computeLeaveCredits(Long employeeId, LeaveComputationDto leaveComputationDto) {
         Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "id", employeeId));
         LeaveCreditsEarnedDto leaveCreditsEarnedDto = leaveComputationDto.getLeaveCreditsEarnedDto();
+        logger.info("LEAVE CREDITS EARNED DTO - {}", leaveCreditsEarnedDto.getLeaveCreditsEarned());
         HourConversionDto hourConversionDto = leaveComputationDto.getHourConversionDto();
         MinuteConversionDto minuteConversionDto = leaveComputationDto.getMinuteConversionDto();
         BigDecimal leaveCreditsEarned = leaveCreditsEarnedDto.getLeaveCreditsEarned();
         BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
         BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
         BigDecimal remainingForcedLeave = employee.getRemainingForcedLeave();
+        BigDecimal leaveWithoutPay = employee.getLeaveWithoutPayTotal();
         sickLeaveTotal = sickLeaveTotal.add(leaveCreditsEarned);
+        logger.info("LEAVE CREDITS EARNED - {}", leaveCreditsEarned);
+        logger.info("SICK LEAVE VALUE - {}", sickLeaveTotal);
         vacationLeaveTotal = vacationLeaveTotal.add(leaveCreditsEarned);
         remainingForcedLeave = remainingForcedLeave.add(leaveCreditsEarned);
         employee.setSickLeaveTotal(sickLeaveTotal);
         employee.setVacationLeaveTotal(vacationLeaveTotal);
-
-        // TODO: Leave credits computation
-        return null;
+        employee.setRemainingForcedLeave((remainingForcedLeave.compareTo(AppConstants.FIVE) == 1
+                        || remainingForcedLeave.compareTo(AppConstants.FIVE) == 0)
+                        ? AppConstants.FIVE : remainingForcedLeave);
+        BigDecimal hoursLate = new BigDecimal(hourConversionDto.getHour());
+        hoursLate = hoursLate.multiply(AppConstants.LEAVE_PER_HOUR).add(minuteConversionDto.getEquivalentDay());
+        leaveWithoutPay = leaveWithoutPay.subtract(hoursLate).signum() == 1 ? AppConstants.ZERO : leaveWithoutPay;
+        employee.setLeaveWithoutPayTotal(leaveWithoutPay);
+        // TODO: Fix the fetching of leaveComputationsDto.
+        Leave leave = new Leave();
+        leave.setEmployee(employee);
+        leave.setVacationLeave(vacationLeaveTotal);
+        leave.setSickLeave(sickLeaveTotal);
+        leaveRepository.saveAndFlush(leave);
+        Employee savedEmployee = employeeRepository.saveAndFlush(employee);
+        employee.setSickLeaveTotal(savedEmployee.getSickLeaveTotal());
+        employee.setVacationLeaveTotal(savedEmployee.getVacationLeaveTotal());
+        employee.setRemainingForcedLeave(savedEmployee.getRemainingForcedLeave());
+        savedEmployee = employeeRepository.saveAndFlush(employee);
+        return this.getInfoForComputation(savedEmployee.getEmployeeNumber());
     }
 }

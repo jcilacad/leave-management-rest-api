@@ -1,5 +1,6 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
+import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LeaveCreditsEarnedDto {
-    private BigDecimal daysPresent;
-    private BigDecimal leaveWithoutPay;
-    private BigDecimal LeaveCreditsEarned;
+    private BigDecimal daysPresent = AppConstants.ZERO;
+    private BigDecimal leaveWithoutPay = AppConstants.ZERO;
+    private BigDecimal LeaveCreditsEarned = AppConstants.ZERO;
 }

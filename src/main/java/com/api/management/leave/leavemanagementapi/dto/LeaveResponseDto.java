@@ -1,8 +1,5 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
-import com.api.management.leave.leavemanagementapi.utils.HourConversion;
-import com.api.management.leave.leavemanagementapi.utils.LeaveCreditsEarned;
-import com.api.management.leave.leavemanagementapi.utils.MinuteConversion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

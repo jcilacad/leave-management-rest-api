@@ -1,10 +1,8 @@
 package com.api.management.leave.leavemanagementapi.controller;
 
-import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
-import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
-import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
+import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
+import com.api.management.leave.leavemanagementapi.service.LeaveService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -59,13 +57,12 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.excludeEmployeeForcedLeave(id, excluded));
     }
 
-    @PostMapping("/leaves")
+    @PostMapping("/reset-leaves")
     public ResponseEntity<EmployeeResponse> resetLeaves (
-            @RequestParam(name = "reset", required = false) boolean reset,
             @RequestParam(name = "pageNo", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNo,
             @RequestParam(name = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
             @RequestParam(name = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY) String sortBy,
             @RequestParam(name = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir) {
-        return ResponseEntity.ok(employeeService.resetLeaves(reset, pageNo, pageSize, sortBy, sortDir));
+        return ResponseEntity.ok(employeeService.resetLeaves(pageNo, pageSize, sortBy, sortDir));
     }
 }
