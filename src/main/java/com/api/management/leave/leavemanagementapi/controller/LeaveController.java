@@ -4,6 +4,7 @@ import com.api.management.leave.leavemanagementapi.dto.LeaveComputationDto;
 import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
 import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
 import com.api.management.leave.leavemanagementapi.service.LeaveService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -19,12 +20,14 @@ public class LeaveController {
     private static Logger logger = LoggerFactory.getLogger(LeaveController.class);
     private LeaveService leaveService;
 
+    @Operation(summary = "Get employee by official email or employee number")
     @GetMapping("/request")
     public ResponseEntity<LeaveResponseDto> getEmployeeByOfficialEmailOrEmployeeNumber(
             @RequestParam(name = "query", required = false) String query) {
         return ResponseEntity.ok(leaveService.getEmployeeByOfficialEmailOrEmployeeNumber(query));
     }
 
+    @Operation(summary = "Leave request")
     @PostMapping("/request")
     public ResponseEntity<LeaveResponseDto> leaveRequest(
             @RequestParam(name = "employeeId") Long employeeId,
@@ -32,12 +35,14 @@ public class LeaveController {
         return new ResponseEntity<>(leaveService.leaveRequest(employeeId, leaveRequestDto), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Get information for leave computation")
     @GetMapping("/compute")
     public ResponseEntity<LeaveResponseDto> getInfoForComputation(
             @RequestParam(name = "query") String query) {
         return ResponseEntity.ok(leaveService.getInfoForComputation(query));
     }
 
+    @Operation(summary = "Compute leave credits")
     @PostMapping("/compute/{employeeId}")
     public ResponseEntity<LeaveResponseDto> computeLeaveCredits(
             @PathVariable(name = "employeeId") Long employeeId,
