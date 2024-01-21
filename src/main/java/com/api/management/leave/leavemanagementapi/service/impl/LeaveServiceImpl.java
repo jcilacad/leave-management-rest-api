@@ -57,12 +57,9 @@ public class LeaveServiceImpl implements LeaveService {
                 employee.setSickLeaveTotal(AppConstants.ZERO);
                 BigDecimal absoluteOfDifference = diffSickLeaveDaysRequested.abs();
                 BigDecimal diffVacationLeaveAbsoluteDiff = vacationLeaveTotal.subtract(absoluteOfDifference);
-                if (diffVacationLeaveAbsoluteDiff.signum() == -1) {
-                    employee.setVacationLeaveTotal(AppConstants.ZERO);
-                } else {
-                    employee.setVacationLeaveTotal(diffVacationLeaveAbsoluteDiff);
-                }
-
+                employee.setVacationLeaveTotal(diffVacationLeaveAbsoluteDiff.signum() == -1
+                        ? AppConstants.ZERO
+                        : diffVacationLeaveAbsoluteDiff);
             } else {
                 employee.setSickLeaveTotal(diffSickLeaveDaysRequested);
             }
@@ -168,18 +165,24 @@ public class LeaveServiceImpl implements LeaveService {
     public LeaveResponseDto computeLeaveCredits(Long employeeId, LeaveComputationDto leaveComputationDto) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "id", employeeId));
-        LeaveCreditsEarnedDto leaveCreditsEarnedDto = leaveComputationDto.getLeaveCreditsEarnedDto();
-        logger.info("LEAVE CREDITS EARNED DTO - {}", leaveCreditsEarnedDto.getLeaveCreditsEarned());
-        HourConversionDto hourConversionDto = leaveComputationDto.getHourConversionDto();
-        MinuteConversionDto minuteConversionDto = leaveComputationDto.getMinuteConversionDto();
-        BigDecimal leaveCreditsEarned = leaveCreditsEarnedDto.getLeaveCreditsEarned();
+        LeaveCreditsEarned leaveCredits = Arrays
+                .stream(LeaveCreditsEarned.values())
+                .filter(e -> e.getDaysPresent().compareTo(leaveComputationDto.getDaysPresent()) == 0)
+                .findFirst().get();
+        HourConversion hourConversions = Arrays
+                .stream(HourConversion.values())
+                .filter(hourConversion -> hourConversion.getHour() == leaveComputationDto.getHour())
+                .findFirst().get();
+        MinuteConversion minuteConversions = Arrays
+                .stream(MinuteConversion.values())
+                .filter(minuteConversion -> minuteConversion.getMinute() == leaveComputationDto.getMinute())
+                .findFirst().get();
+        BigDecimal leaveCreditsEarned = leaveCredits.getLeaveCreditsEarned();
         BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
         BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
         BigDecimal remainingForcedLeave = employee.getRemainingForcedLeave();
         BigDecimal leaveWithoutPay = employee.getLeaveWithoutPayTotal();
         sickLeaveTotal = sickLeaveTotal.add(leaveCreditsEarned);
-        logger.info("LEAVE CREDITS EARNED - {}", leaveCreditsEarned);
-        logger.info("SICK LEAVE VALUE - {}", sickLeaveTotal);
         vacationLeaveTotal = vacationLeaveTotal.add(leaveCreditsEarned);
         remainingForcedLeave = remainingForcedLeave.add(leaveCreditsEarned);
         employee.setSickLeaveTotal(sickLeaveTotal);
@@ -187,11 +190,10 @@ public class LeaveServiceImpl implements LeaveService {
         employee.setRemainingForcedLeave((remainingForcedLeave.compareTo(AppConstants.FIVE) == 1
                         || remainingForcedLeave.compareTo(AppConstants.FIVE) == 0)
                         ? AppConstants.FIVE : remainingForcedLeave);
-        BigDecimal hoursLate = new BigDecimal(hourConversionDto.getHour());
-        hoursLate = hoursLate.multiply(AppConstants.LEAVE_PER_HOUR).add(minuteConversionDto.getEquivalentDay());
+        BigDecimal hoursLate = new BigDecimal(hourConversions.getHour());
+        hoursLate = hoursLate.multiply(AppConstants.LEAVE_PER_HOUR).add(minuteConversions.getEquivalentDay());
         leaveWithoutPay = leaveWithoutPay.subtract(hoursLate).signum() == 1 ? AppConstants.ZERO : leaveWithoutPay;
         employee.setLeaveWithoutPayTotal(leaveWithoutPay);
-        // TODO: Fix the fetching of leaveComputationsDto.
         Leave leave = new Leave();
         leave.setEmployee(employee);
         leave.setVacationLeave(vacationLeaveTotal);
@@ -202,6 +204,6 @@ public class LeaveServiceImpl implements LeaveService {
         employee.setVacationLeaveTotal(savedEmployee.getVacationLeaveTotal());
         employee.setRemainingForcedLeave(savedEmployee.getRemainingForcedLeave());
         savedEmployee = employeeRepository.saveAndFlush(employee);
-        return this.getInfoForComputation(savedEmployee.getEmployeeNumber());
+        return this.getInfoForComputation(savedEmployee.getOfficialEmail());
     }
 }

@@ -3,15 +3,17 @@ package com.api.management.leave.leavemanagementapi.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class LeaveComputationDto {
     @NotNull
-    private HourConversionDto hourConversionDto;
+    private int hour;
     @NotNull
-    private MinuteConversionDto minuteConversionDto;
+    private int minute;
     @NotNull
-    private LeaveCreditsEarnedDto leaveCreditsEarnedDto;
+    private BigDecimal daysPresent;
 }
