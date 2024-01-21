@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LeaveCreditsEarnedDto {
-    private BigDecimal daysPresent = AppConstants.ZERO;
-    private BigDecimal leaveWithoutPay = AppConstants.ZERO;
-    private BigDecimal LeaveCreditsEarned = AppConstants.ZERO;
+    private BigDecimal daysPresent;
+    private BigDecimal leaveWithoutPay;
+    private BigDecimal LeaveCreditsEarned;
 }

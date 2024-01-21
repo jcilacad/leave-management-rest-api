@@ -1,6 +1,7 @@
 package com.api.management.leave.leavemanagementapi.controller;
 
 import com.api.management.leave.leavemanagementapi.dto.LeaveComputationDto;
+import com.api.management.leave.leavemanagementapi.dto.LeaveMonetizationResponse;
 import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
 import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
 import com.api.management.leave.leavemanagementapi.service.LeaveService;
@@ -48,5 +49,12 @@ public class LeaveController {
             @PathVariable(name = "employeeId") Long employeeId,
             @RequestBody @Valid LeaveComputationDto leaveComputationDto) {
         return new ResponseEntity<>(leaveService.computeLeaveCredits(employeeId, leaveComputationDto), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Monetize leave credits")
+    @GetMapping("/monetize")
+    public ResponseEntity<LeaveMonetizationResponse> getInfoForMonetization(
+            @RequestParam(name = "query") String query) {
+        return ResponseEntity.ok(leaveService.getInfoForMonetization(query));
     }
 }
