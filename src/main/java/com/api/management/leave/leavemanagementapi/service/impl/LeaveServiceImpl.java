@@ -113,11 +113,8 @@ public class LeaveServiceImpl implements LeaveService {
         leaveResponseDto.setLeaveTypes(Arrays.stream(LeaveTypes.values())
                 .map(LeaveTypes::getLeave)
                 .collect(Collectors.toList()));
-        BigDecimal availableForcedLeaveToCancel = employeeDto.getVacationLeaveTotal().subtract(employeeDto.getRemainingForcedLeave());
-        availableForcedLeaveToCancel = availableForcedLeaveToCancel.signum() == -1
-                ? AppConstants.ZERO
-                : availableForcedLeaveToCancel;
-        leaveResponseDto.setAvailableForcedLeaveToCancel(availableForcedLeaveToCancel);
+        BigDecimal forcedLeaveToCancel = forcedLeaveToCancel(employeeDto);
+        leaveResponseDto.setAvailableForcedLeaveToCancel(forcedLeaveToCancel);
         return leaveResponseDto;
     }
 
@@ -209,21 +206,54 @@ public class LeaveServiceImpl implements LeaveService {
     public LeaveMonetizationResponse getInfoForMonetization(String query) {
         Employee employee = employeeRepository.findEmployeeByEmailOrEmployeeNumber(query)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "query", query));
-        List<LeaveCreditsEarnedDto> leaveCreditsEarnedDtos = Arrays.stream(LeaveCreditsEarned.values())
-                .map(leaveCredit -> {
-                    LeaveCreditsEarnedDto leaveCreditsEarnedDto = new LeaveCreditsEarnedDto();
-                    leaveCreditsEarnedDto.setLeaveCreditsEarned(leaveCredit.getLeaveCreditsEarned());
-                    leaveCreditsEarnedDto.setLeaveWithoutPay(leaveCredit.getLeaveWithoutPay());
-                    leaveCreditsEarnedDto.setDaysPresent(leaveCredit.getDaysPresent());
-                    return leaveCreditsEarnedDto;
-                })
-                .collect(Collectors.toList());
-        BigDecimal forcedLeaveToCancel = employee.getVacationLeaveTotal().subtract(employee.getRemainingForcedLeave());
-        forcedLeaveToCancel = forcedLeaveToCancel.signum() == -1 ? AppConstants.ZERO : forcedLeaveToCancel;
+        BigDecimal forcedLeaveToCancel = forcedLeaveToCancel(employeeMapper.toDto(employee));
         LeaveMonetizationResponse leaveMonetizationResponse = new LeaveMonetizationResponse();
         leaveMonetizationResponse.setEmployeeDto(employeeMapper.toDto(employee));
-        leaveMonetizationResponse.setLeaveCredits(leaveCreditsEarnedDtos);
         leaveMonetizationResponse.setForcedLeaveToCancel(forcedLeaveToCancel);
         return leaveMonetizationResponse;
+    }
+
+    @Override
+    @Transactional
+    public LeaveMonetizationResponse monetizeLeaveCredits(Long employeeId, LeaveMonetizationRequest leaveMonetizationRequest) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "id", employeeId));
+        BigDecimal vacationLeave = leaveMonetizationRequest.getVacationLeave();
+        BigDecimal sickLeave = leaveMonetizationRequest.getSickLeave();
+        BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
+        BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
+        vacationLeaveTotal = vacationLeaveTotal.subtract(vacationLeave);
+        sickLeaveTotal = sickLeaveTotal.subtract(sickLeave);
+        vacationLeaveTotal = vacationLeaveTotal.signum() == -1 ? AppConstants.ZERO : vacationLeaveTotal;
+        sickLeaveTotal = sickLeaveTotal.signum() == -1 ? AppConstants.ZERO : sickLeaveTotal;
+        employee.setVacationLeaveTotal(vacationLeaveTotal);
+        employee.setSickLeaveTotal(sickLeaveTotal);
+
+        Leave leave = new Leave();
+        leave.setLeaveType(AppConstants.MONETIZATION);
+        leave.setSpecialPrivilegeLeave(employee.getRemainingSpecialPrivilegeLeave());
+        leave.setForcedLeave(employee.getRemainingForcedLeave());
+        leave.setVacationLeave(employee.getVacationLeaveTotal());
+        leave.setSickLeave(employee.getSickLeaveTotal());
+        leave.setEmployee(employee);
+        leave.setAppliedFrom(String.format("Vacation Leave - %s", vacationLeave));
+        leave.setAppliedTo(String.format("Sick Leave - %s", sickLeave));
+        leaveRepository.saveAndFlush(leave);
+        EmployeeDto employeeDto = employeeMapper.toDto(employee);
+        BigDecimal forcedLeaveToCancel = forcedLeaveToCancel(employeeDto);
+        LeaveMonetizationResponse leaveMonetizationResponse = new LeaveMonetizationResponse();
+        leaveMonetizationResponse.setForcedLeaveToCancel(forcedLeaveToCancel);
+        leaveMonetizationResponse.setEmployeeDto(employeeDto);
+        employeeRepository.save(employee);
+        return leaveMonetizationResponse;
+    }
+
+    private static BigDecimal forcedLeaveToCancel(EmployeeDto employeeDto) {
+        BigDecimal availableForcedLeaveToCancel = employeeDto.getVacationLeaveTotal()
+                .subtract(employeeDto.getRemainingForcedLeave());
+        availableForcedLeaveToCancel = availableForcedLeaveToCancel.signum() == -1
+                ? AppConstants.ZERO
+                : availableForcedLeaveToCancel;
+        return availableForcedLeaveToCancel;
     }
 }

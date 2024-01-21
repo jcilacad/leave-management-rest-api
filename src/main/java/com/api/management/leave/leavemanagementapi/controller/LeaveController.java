@@ -1,9 +1,6 @@
 package com.api.management.leave.leavemanagementapi.controller;
 
-import com.api.management.leave.leavemanagementapi.dto.LeaveComputationDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveMonetizationResponse;
-import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
+import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.service.LeaveService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -51,10 +48,18 @@ public class LeaveController {
         return new ResponseEntity<>(leaveService.computeLeaveCredits(employeeId, leaveComputationDto), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Monetize leave credits")
+    @Operation(summary = "Get information for leave monetization")
     @GetMapping("/monetize")
     public ResponseEntity<LeaveMonetizationResponse> getInfoForMonetization(
             @RequestParam(name = "query") String query) {
         return ResponseEntity.ok(leaveService.getInfoForMonetization(query));
+    }
+
+    @Operation(summary = "Monetize leave credits")
+    @PostMapping("/monetize/{employeeId}")
+    public ResponseEntity<LeaveMonetizationResponse> monetizeLeaveCredits(
+            @PathVariable(name = "employeeId") Long employeeId,
+            @RequestBody LeaveMonetizationRequest leaveMonetizationRequest) {
+        return new ResponseEntity<>(leaveService.monetizeLeaveCredits(employeeId, leaveMonetizationRequest), HttpStatus.CREATED);
     }
 }
