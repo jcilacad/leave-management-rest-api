@@ -228,23 +228,22 @@ public class LeaveServiceImpl implements LeaveService {
         sickLeaveTotal = sickLeaveTotal.signum() == -1 ? AppConstants.ZERO : sickLeaveTotal;
         employee.setVacationLeaveTotal(vacationLeaveTotal);
         employee.setSickLeaveTotal(sickLeaveTotal);
-
+        Employee savedEmployee = employeeRepository.saveAndFlush(employee);
         Leave leave = new Leave();
         leave.setLeaveType(AppConstants.MONETIZATION);
-        leave.setSpecialPrivilegeLeave(employee.getRemainingSpecialPrivilegeLeave());
-        leave.setForcedLeave(employee.getRemainingForcedLeave());
-        leave.setVacationLeave(employee.getVacationLeaveTotal());
-        leave.setSickLeave(employee.getSickLeaveTotal());
-        leave.setEmployee(employee);
+        leave.setSpecialPrivilegeLeave(savedEmployee.getRemainingSpecialPrivilegeLeave());
+        leave.setForcedLeave(savedEmployee.getRemainingForcedLeave());
+        leave.setVacationLeave(savedEmployee.getVacationLeaveTotal());
+        leave.setSickLeave(savedEmployee.getSickLeaveTotal());
+        leave.setEmployee(savedEmployee);
         leave.setAppliedFrom(String.format("Vacation Leave - %s", vacationLeave));
         leave.setAppliedTo(String.format("Sick Leave - %s", sickLeave));
         leaveRepository.saveAndFlush(leave);
-        EmployeeDto employeeDto = employeeMapper.toDto(employee);
+        EmployeeDto employeeDto = employeeMapper.toDto(savedEmployee);
         BigDecimal forcedLeaveToCancel = forcedLeaveToCancel(employeeDto);
         LeaveMonetizationResponse leaveMonetizationResponse = new LeaveMonetizationResponse();
         leaveMonetizationResponse.setForcedLeaveToCancel(forcedLeaveToCancel);
         leaveMonetizationResponse.setEmployeeDto(employeeDto);
-        employeeRepository.save(employee);
         return leaveMonetizationResponse;
     }
 
