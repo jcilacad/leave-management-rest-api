@@ -1,9 +1,6 @@
 package com.api.management.leave.leavemanagementapi.service;
 
-import com.api.management.leave.leavemanagementapi.dto.LeaveComputationDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveMonetizationResponse;
-import com.api.management.leave.leavemanagementapi.dto.LeaveRequestDto;
-import com.api.management.leave.leavemanagementapi.dto.LeaveResponseDto;
+import com.api.management.leave.leavemanagementapi.dto.*;
 
 public interface LeaveService {
     LeaveResponseDto getEmployeeByOfficialEmailOrEmployeeNumber(String query);
@@ -11,4 +8,5 @@ public interface LeaveService {
     LeaveResponseDto getInfoForComputation(String query);
     LeaveResponseDto computeLeaveCredits (Long employeeId, LeaveComputationDto leaveComputationDto);
     LeaveMonetizationResponse getInfoForMonetization(String query);
+    LeaveMonetizationResponse monetizeLeaveCredits(Long employeeId, LeaveMonetizationRequest leaveMonetizationRequest);
 }

@@ -2,7 +2,6 @@ package com.api.management.leave.leavemanagementapi.controller;
 
 import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
-import com.api.management.leave.leavemanagementapi.service.LeaveService;
 import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;

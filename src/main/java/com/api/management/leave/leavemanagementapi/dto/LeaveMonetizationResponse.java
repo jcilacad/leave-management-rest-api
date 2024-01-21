@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Getter
 @Setter
@@ -15,5 +14,4 @@ import java.util.List;
 public class LeaveMonetizationResponse {
     private BigDecimal forcedLeaveToCancel;
     private EmployeeDto employeeDto;
-    private List<LeaveCreditsEarnedDto> leaveCredits;
 }
