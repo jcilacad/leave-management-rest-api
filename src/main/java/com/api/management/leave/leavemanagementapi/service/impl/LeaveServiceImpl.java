@@ -34,8 +34,6 @@ public class LeaveServiceImpl implements LeaveService {
         Employee employee = employeeRepository.findEmployeeByEmailOrEmployeeNumber(query)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "query", query));
         EmployeeDto employeeDto = employeeMapper.toDto(employee);
-        LeaveResponseDto leaveResponseDto = new LeaveResponseDto();
-        leaveResponseDto.setEmployeeDto(employeeDto);
         return getLeaveResponseDto(employeeDto);
     }
 
@@ -168,15 +166,15 @@ public class LeaveServiceImpl implements LeaveService {
         LeaveCreditsEarned leaveCredits = Arrays
                 .stream(LeaveCreditsEarned.values())
                 .filter(e -> e.getDaysPresent().compareTo(leaveComputationDto.getDaysPresent()) == 0)
-                .findFirst().get();
+                .findFirst().orElseThrow();
         HourConversion hourConversions = Arrays
                 .stream(HourConversion.values())
                 .filter(hourConversion -> hourConversion.getHour() == leaveComputationDto.getHour())
-                .findFirst().get();
+                .findFirst().orElseThrow();
         MinuteConversion minuteConversions = Arrays
                 .stream(MinuteConversion.values())
                 .filter(minuteConversion -> minuteConversion.getMinute() == leaveComputationDto.getMinute())
-                .findFirst().get();
+                .findFirst().orElseThrow();
         BigDecimal leaveCreditsEarned = leaveCredits.getLeaveCreditsEarned();
         BigDecimal sickLeaveTotal = employee.getSickLeaveTotal();
         BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
@@ -205,5 +203,27 @@ public class LeaveServiceImpl implements LeaveService {
         employee.setRemainingForcedLeave(savedEmployee.getRemainingForcedLeave());
         savedEmployee = employeeRepository.saveAndFlush(employee);
         return this.getInfoForComputation(savedEmployee.getOfficialEmail());
+    }
+
+    @Override
+    public LeaveMonetizationResponse getInfoForMonetization(String query) {
+        Employee employee = employeeRepository.findEmployeeByEmailOrEmployeeNumber(query)
+                .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "query", query));
+        List<LeaveCreditsEarnedDto> leaveCreditsEarnedDtos = Arrays.stream(LeaveCreditsEarned.values())
+                .map(leaveCredit -> {
+                    LeaveCreditsEarnedDto leaveCreditsEarnedDto = new LeaveCreditsEarnedDto();
+                    leaveCreditsEarnedDto.setLeaveCreditsEarned(leaveCredit.getLeaveCreditsEarned());
+                    leaveCreditsEarnedDto.setLeaveWithoutPay(leaveCredit.getLeaveWithoutPay());
+                    leaveCreditsEarnedDto.setDaysPresent(leaveCredit.getDaysPresent());
+                    return leaveCreditsEarnedDto;
+                })
+                .collect(Collectors.toList());
+        BigDecimal forcedLeaveToCancel = employee.getVacationLeaveTotal().subtract(employee.getRemainingForcedLeave());
+        forcedLeaveToCancel = forcedLeaveToCancel.signum() == -1 ? AppConstants.ZERO : forcedLeaveToCancel;
+        LeaveMonetizationResponse leaveMonetizationResponse = new LeaveMonetizationResponse();
+        leaveMonetizationResponse.setEmployeeDto(employeeMapper.toDto(employee));
+        leaveMonetizationResponse.setLeaveCredits(leaveCreditsEarnedDtos);
+        leaveMonetizationResponse.setForcedLeaveToCancel(forcedLeaveToCancel);
+        return leaveMonetizationResponse;
     }
 }

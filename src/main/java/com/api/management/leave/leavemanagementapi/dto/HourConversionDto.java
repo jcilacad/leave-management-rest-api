@@ -14,5 +14,5 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class HourConversionDto {
     private int hour;
-    private BigDecimal equivalentDay = AppConstants.ZERO;
+    private BigDecimal equivalentDay;
 }
