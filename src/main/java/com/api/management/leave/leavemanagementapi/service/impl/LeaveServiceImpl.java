@@ -186,8 +186,10 @@ public class LeaveServiceImpl implements LeaveService {
                         || remainingForcedLeave.compareTo(AppConstants.FIVE) == 0)
                         ? AppConstants.FIVE : remainingForcedLeave);
         BigDecimal hoursLate = new BigDecimal(hourConversions.getHour());
-        hoursLate = hoursLate.multiply(AppConstants.LEAVE_PER_HOUR).add(minuteConversions.getEquivalentDay());
-        leaveWithoutPay = leaveWithoutPay.subtract(hoursLate).signum() == 1 ? AppConstants.ZERO : leaveWithoutPay;
+        hoursLate = hoursLate.multiply(AppConstants.LEAVE_PER_HOUR);
+        hoursLate = hoursLate.add(minuteConversions.getEquivalentDay());
+        leaveWithoutPay = leaveWithoutPay.subtract(hoursLate);
+        leaveWithoutPay = leaveWithoutPay.signum() == -1 ? AppConstants.ZERO : leaveWithoutPay;
         employee.setLeaveWithoutPayTotal(leaveWithoutPay);
         Leave leave = new Leave();
         leave.setEmployee(employee);

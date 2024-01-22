@@ -1,5 +1,7 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -30,10 +32,15 @@ public class EmployeeDto {
     @Email
     private String officialEmail;
     private boolean excluded;
+    @Column(precision = 10, scale = 3)
     private BigDecimal remainingForcedLeave;
+    @Column(precision = 10, scale = 3)
     private BigDecimal remainingSpecialPrivilegeLeave;
+    @Column(precision = 10, scale = 3)
     private BigDecimal vacationLeaveTotal;
+    @Column(precision = 10, scale = 3)
     private BigDecimal sickLeaveTotal;
+    @Column(precision = 10, scale = 3)
     private BigDecimal leaveWithoutPayTotal;
     private LocalDateTime dateCreated;
     private LocalDateTime dateUpdated;
