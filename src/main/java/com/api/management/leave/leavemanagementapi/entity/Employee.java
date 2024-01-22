@@ -34,10 +34,15 @@ public class Employee {
     @Column(nullable = false, unique = true)
     private String officialEmail;
     private boolean excluded;
+    @Column(precision = 10, scale = 3)
     private BigDecimal remainingForcedLeave;
+    @Column(precision = 10, scale = 3)
     private BigDecimal remainingSpecialPrivilegeLeave;
+    @Column(precision = 10, scale = 3)
     private BigDecimal vacationLeaveTotal;
+    @Column(precision = 10, scale = 3)
     private BigDecimal sickLeaveTotal;
+    @Column(precision = 10, scale = 3)
     private BigDecimal leaveWithoutPayTotal;
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Leave> leaves;
