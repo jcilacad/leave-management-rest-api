@@ -25,9 +25,13 @@ public class Leave {
     private String appliedFrom;
     private String appliedTo;
     private BigDecimal daysRequested;
+    @Column(precision = 10, scale = 3)
     private BigDecimal vacationLeave;
+    @Column(precision = 10, scale = 3)
     private BigDecimal sickLeave;
+    @Column(precision = 10, scale = 3)
     private BigDecimal specialPrivilegeLeave;
+    @Column(precision = 10, scale = 3)
     private BigDecimal forcedLeave;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id", nullable = false)
