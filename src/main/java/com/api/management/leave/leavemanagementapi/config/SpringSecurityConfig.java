@@ -2,12 +2,10 @@ package com.api.management.leave.leavemanagementapi.config;
 
 import com.api.management.leave.leavemanagementapi.security.JwtAuthenticationEntryPoint;
 import com.api.management.leave.leavemanagementapi.security.JwtAuthenticationFilter;
-import io.jsonwebtoken.Jwt;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,7 +39,7 @@ public class SpringSecurityConfig {
                     authorize
                             .requestMatchers("/api/v1/auth/**").permitAll()
                             .requestMatchers("/swagger-ui/**").permitAll()
-                            .requestMatchers("/v3/api-docs").permitAll()
+                            .requestMatchers("/v3/api-docs/**").permitAll()
                             .anyRequest().authenticated();
                 })
                 .exceptionHandling(exception -> exception
