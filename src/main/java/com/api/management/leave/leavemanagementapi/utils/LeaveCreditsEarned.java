@@ -1,7 +1,12 @@
 package com.api.management.leave.leavemanagementapi.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 
+@Getter
+@AllArgsConstructor
 public enum LeaveCreditsEarned {
     LCE1(BigDecimal.valueOf(30.00), BigDecimal.valueOf(0.00), BigDecimal.valueOf(1.250)),
     LCE2(BigDecimal.valueOf(29.50), BigDecimal.valueOf(0.50), BigDecimal.valueOf(1.229)),
@@ -68,26 +73,4 @@ public enum LeaveCreditsEarned {
     private final BigDecimal daysPresent;
     private final BigDecimal leaveWithoutPay;
     private final BigDecimal LeaveCreditsEarned;
-
-    LeaveCreditsEarned(BigDecimal daysPresent, BigDecimal leaveWithoutPay, BigDecimal leaveCreditsEarned) {
-        this.daysPresent = daysPresent;
-        this.leaveWithoutPay = leaveWithoutPay;
-        this.LeaveCreditsEarned = leaveCreditsEarned;
-    }
-
-    public BigDecimal getDaysPresent() {
-        return daysPresent;
-    }
-
-    public BigDecimal getLeaveWithoutPay() {
-        return leaveWithoutPay;
-    }
-
-    public BigDecimal getLeaveCreditsEarned() {
-        return LeaveCreditsEarned;
-    }
-
-    public String getName() {
-        return name();
-    }
 }

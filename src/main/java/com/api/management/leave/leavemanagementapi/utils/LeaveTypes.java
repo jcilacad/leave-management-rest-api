@@ -1,5 +1,10 @@
 package com.api.management.leave.leavemanagementapi.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum LeaveTypes {
     VACATION("Vacation Leave"),
     FORCED("Mandatory / Forced Leave"),
@@ -16,16 +21,4 @@ public enum LeaveTypes {
     ADOPTION_LEAVE("Adoption Leave");
 
     private String leave;
-
-    LeaveTypes(String leave) {
-        this.leave = leave;
-    }
-
-    public String getLeave () {
-        return leave;
-    }
-
-    public String getName () {
-        return name();
-    }
 }

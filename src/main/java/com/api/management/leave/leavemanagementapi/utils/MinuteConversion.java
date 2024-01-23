@@ -1,7 +1,12 @@
 package com.api.management.leave.leavemanagementapi.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 
+@Getter
+@AllArgsConstructor
 public enum MinuteConversion {
     ONE(1, BigDecimal.valueOf(.002)),
     TWO(2, BigDecimal.valueOf(.004)),
@@ -66,21 +71,4 @@ public enum MinuteConversion {
 
     private final int minute;
     private final BigDecimal equivalentDay;
-
-    MinuteConversion(int minute, BigDecimal equivalentDay) {
-        this.minute = minute;
-        this.equivalentDay = equivalentDay;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public BigDecimal getEquivalentDay() {
-        return equivalentDay;
-    }
-
-    public String getName() {
-        return name();
-    }
 }

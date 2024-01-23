@@ -1,7 +1,12 @@
 package com.api.management.leave.leavemanagementapi.utils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.math.BigDecimal;
 
+@Getter
+@AllArgsConstructor
 public enum HourConversion {
     ONE(1, BigDecimal.valueOf(.125)),
     TWO(2, BigDecimal.valueOf(.250)),
@@ -14,21 +19,4 @@ public enum HourConversion {
 
     private final int hour;
     private final BigDecimal equivalentDay;
-
-    HourConversion(int hour, BigDecimal equivalentDay) {
-        this.hour = hour;
-        this.equivalentDay = equivalentDay;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
-    public BigDecimal getEquivalentDay() {
-        return equivalentDay;
-    }
-
-    public String getName() {
-        return name();
-    }
 }
