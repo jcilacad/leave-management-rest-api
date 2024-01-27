@@ -14,6 +14,7 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
+
     private static Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
     @Value("${app.jwt-secret}")
     private String jwtSecret;
@@ -34,9 +35,7 @@ public class JwtTokenProvider {
     }
 
     private Key key() {
-        return Keys.hmacShaKeyFor(
-                Decoders.BASE64URL.decode(jwtSecret)
-        );
+        return Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(jwtSecret));
     }
 
     public String getUsername(String token) {
