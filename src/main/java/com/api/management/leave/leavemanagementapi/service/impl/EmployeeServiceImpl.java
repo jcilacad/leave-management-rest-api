@@ -22,8 +22,9 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
-    private EmployeeRepository employeeRepository;
-    private EmployeeMapper employeeMapper;
+
+    private final EmployeeRepository employeeRepository;
+    private final EmployeeMapper employeeMapper;
 
     @Override
     public EmployeeDto createEmployee(EmployeeDto employeeDto) {
@@ -102,6 +103,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(AppConstants.EMPLOYEE, "id", id));
         StringBuilder message = new StringBuilder();
+
         if (excluded) {
             if (employee.isExcluded()) {
                 message.append("Employee was already excluded.");
@@ -110,7 +112,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                 message.append("Employee excluded successfully.");
             }
         }
-
         Employee updatedEmployee = employeeRepository.save(employee);
         EmployeeDto employeeDto = employeeMapper.toDto(updatedEmployee);
         employeeDto.setMessage(message.toString());
@@ -123,6 +124,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             List<Employee> employees = employeeRepository.findAll().stream().map(employee -> {
                 BigDecimal remForcedLeave = employee.getRemainingForcedLeave();
                 BigDecimal remVacationLeave = employee.getVacationLeaveTotal();
+
                 if (!employee.isExcluded()) {
                     BigDecimal diffRemForcedAndVacation = remVacationLeave.subtract(remForcedLeave);
                     diffRemForcedAndVacation = diffRemForcedAndVacation.signum() == -1
@@ -130,7 +132,6 @@ public class EmployeeServiceImpl implements EmployeeService {
                             : diffRemForcedAndVacation;
                     employee.setVacationLeaveTotal(diffRemForcedAndVacation);
                 }
-
                 employee.setExcluded(AppConstants.DEFAULT_IS_EXCLUDED);
                 employee.setRemainingForcedLeave(remVacationLeave.compareTo(AppConstants.FIVE) == 1
                         || remVacationLeave.compareTo(AppConstants.FIVE) == 0

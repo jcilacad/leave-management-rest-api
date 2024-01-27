@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/employees")
 @AllArgsConstructor
 public class EmployeeController {
-    private EmployeeService employeeService;
+
+    private final EmployeeService employeeService;
 
     @Operation(summary = "Get all employees")
     @GetMapping
@@ -39,12 +40,12 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
-
     }
 
     @Operation(summary = "Update employee")
     @PutMapping("/{id}")
-    public ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto employeeDto, @PathVariable Long id) {
+    public ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto employeeDto,
+                                                      @PathVariable Long id) {
         return ResponseEntity.ok(employeeService.updateEmployee(employeeDto, id));
     }
 
@@ -57,9 +58,8 @@ public class EmployeeController {
 
     @Operation(summary = "Exclude employee's forced leave")
     @PostMapping("/{id}")
-    public ResponseEntity<EmployeeDto> excludeEmployeeForcedLeave(
-            @PathVariable Long id,
-            @RequestParam(name = "excluded", required = false) Boolean excluded) {
+    public ResponseEntity<EmployeeDto> excludeEmployeeForcedLeave(@PathVariable Long id,
+                                                                  @RequestParam(name = "excluded", required = false) Boolean excluded) {
         return ResponseEntity.ok(employeeService.excludeEmployeeForcedLeave(id, excluded));
     }
 

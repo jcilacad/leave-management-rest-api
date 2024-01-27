@@ -24,10 +24,11 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class LeaveServiceImpl implements LeaveService {
+
     private static Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
-    private EmployeeRepository employeeRepository;
-    private LeaveRepository leaveRepository;
-    private EmployeeMapper employeeMapper;
+    private final EmployeeRepository employeeRepository;
+    private final LeaveRepository leaveRepository;
+    private final EmployeeMapper employeeMapper;
 
     @Override
     public LeaveResponseDto getEmployeeByOfficialEmailOrEmployeeNumber(String query) {
@@ -49,8 +50,10 @@ public class LeaveServiceImpl implements LeaveService {
         BigDecimal vacationLeaveTotal = employee.getVacationLeaveTotal();
         BigDecimal forcedLeave = employee.getRemainingForcedLeave();
         BigDecimal specialPrivilege = employee.getRemainingSpecialPrivilegeLeave();
+
         if (leaveType.equalsIgnoreCase(LeaveTypes.SICK.getLeave())) {
             BigDecimal diffSickLeaveDaysRequested = sickLeaveTotal.subtract(daysRequested);
+
             if (diffSickLeaveDaysRequested.signum() == -1) {
                 employee.setSickLeaveTotal(AppConstants.ZERO);
                 BigDecimal absoluteOfDifference = diffSickLeaveDaysRequested.abs();
@@ -61,11 +64,12 @@ public class LeaveServiceImpl implements LeaveService {
             } else {
                 employee.setSickLeaveTotal(diffSickLeaveDaysRequested);
             }
-
         } else if (leaveType.equalsIgnoreCase(LeaveTypes.VACATION.getLeave())) {
             BigDecimal diffVacationLeaveDaysRequested = vacationLeaveTotal.subtract(daysRequested);
+
             if (diffVacationLeaveDaysRequested.compareTo(AppConstants.FIVE) == -1) {
                 employee.setRemainingForcedLeave(diffVacationLeaveDaysRequested);
+
                 if (diffVacationLeaveDaysRequested.signum() == -1) {
                     employee.setRemainingForcedLeave(AppConstants.ZERO);
                     employee.setVacationLeaveTotal(AppConstants.ZERO);
@@ -89,7 +93,6 @@ public class LeaveServiceImpl implements LeaveService {
                     ? AppConstants.ZERO
                     : diffSpecialPrivilegeLeaveDaysRequested);
         }
-
         Leave leave = new Leave();
         leave.setEmployee(employee);
         leave.setForcedLeave(forcedLeave);

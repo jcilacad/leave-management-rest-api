@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/leaves")
 @AllArgsConstructor
 public class LeaveController {
+
     private static Logger logger = LoggerFactory.getLogger(LeaveController.class);
-    private LeaveService leaveService;
+    private final LeaveService leaveService;
 
     @Operation(summary = "Get employee by official email or employee number")
     @GetMapping("/request")
@@ -27,16 +28,14 @@ public class LeaveController {
 
     @Operation(summary = "Leave request")
     @PostMapping("/request")
-    public ResponseEntity<LeaveResponseDto> leaveRequest(
-            @RequestParam(name = "employeeId") Long employeeId,
-            @RequestBody @Valid LeaveRequestDto leaveRequestDto) {
+    public ResponseEntity<LeaveResponseDto> leaveRequest(@RequestParam(name = "employeeId") Long employeeId,
+                                                         @RequestBody @Valid LeaveRequestDto leaveRequestDto) {
         return new ResponseEntity<>(leaveService.leaveRequest(employeeId, leaveRequestDto), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get information for leave computation")
     @GetMapping("/compute")
-    public ResponseEntity<LeaveResponseDto> getInfoForComputation(
-            @RequestParam(name = "query") String query) {
+    public ResponseEntity<LeaveResponseDto> getInfoForComputation(@RequestParam(name = "query") String query) {
         return ResponseEntity.ok(leaveService.getInfoForComputation(query));
     }
 

@@ -7,7 +7,10 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface LeaveMapper {
+
     LeaveMapper INSTANCE = Mappers.getMapper(LeaveMapper.class);
+
     LeaveDto toDto (Leave leave);
+
     Leave toEntity(LeaveDto leaveDto);
 }

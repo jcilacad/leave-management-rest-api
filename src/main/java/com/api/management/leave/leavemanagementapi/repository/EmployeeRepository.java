@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+
     @Query("SELECT e FROM Employee e WHERE " +
             "e.employeeNumber LIKE CONCAT('%', :query, '%') OR " +
             "e.firstName LIKE CONCAT('%', :query, '%') OR " +
@@ -17,8 +18,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
             "e.lastName LIKE CONCAT('%', :query, '%') OR " +
             "e.officialEmail LIKE CONCAT('%', :query, '%')")
     List<Employee> findEmployeesByQuery(String query);
+
     @Query("SELECT e FROM Employee e WHERE e IN :filteredEmployees")
     Page<Employee> findAllFiltered(List<Employee> filteredEmployees, Pageable pageable);
+
     @Query("SELECT e FROM Employee e WHERE " +
             "e.officialEmail LIKE CONCAT('%', :query, '%') OR " +
             "e.employeeNumber LIKE CONCAT('%', :query, '%')")
