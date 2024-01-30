@@ -1,5 +1,6 @@
 package com.api.management.leave.leavemanagementapi.service.impl;
 
+import com.api.management.leave.leavemanagementapi.dto.JwtAuthResponse;
 import com.api.management.leave.leavemanagementapi.dto.LoginDto;
 import com.api.management.leave.leavemanagementapi.repository.UserRepository;
 import com.api.management.leave.leavemanagementapi.security.JwtTokenProvider;
@@ -22,11 +23,13 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public String login(LoginDto loginDto) {
+    public JwtAuthResponse login(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getUsernameOrEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtTokenProvider.generateToken(authentication);
-        return token;
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+        return jwtAuthResponse;
     }
 }
