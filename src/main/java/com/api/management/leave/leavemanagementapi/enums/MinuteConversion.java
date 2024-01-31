@@ -1,4 +1,4 @@
-package com.api.management.leave.leavemanagementapi.utils;
+package com.api.management.leave.leavemanagementapi.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

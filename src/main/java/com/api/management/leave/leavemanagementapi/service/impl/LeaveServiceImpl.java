@@ -1,14 +1,18 @@
 package com.api.management.leave.leavemanagementapi.service.impl;
 
+import com.api.management.leave.leavemanagementapi.constants.AppConstants;
 import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.entity.Employee;
 import com.api.management.leave.leavemanagementapi.entity.Leave;
+import com.api.management.leave.leavemanagementapi.enums.HourConversion;
+import com.api.management.leave.leavemanagementapi.enums.LeaveCreditsEarned;
+import com.api.management.leave.leavemanagementapi.enums.LeaveTypes;
+import com.api.management.leave.leavemanagementapi.enums.MinuteConversion;
 import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.repository.LeaveRepository;
 import com.api.management.leave.leavemanagementapi.service.LeaveService;
-import com.api.management.leave.leavemanagementapi.utils.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -250,6 +254,11 @@ public class LeaveServiceImpl implements LeaveService {
         leaveMonetizationResponse.setForcedLeaveToCancel(forcedLeaveToCancel);
         leaveMonetizationResponse.setEmployeeDto(employeeDto);
         return leaveMonetizationResponse;
+    }
+
+    @Override
+    public List<Leave> findByEmployeeId(Long userId) {
+        return leaveRepository.findByEmployeeId(userId);
     }
 
     private static BigDecimal forcedLeaveToCancel(EmployeeDto employeeDto) {

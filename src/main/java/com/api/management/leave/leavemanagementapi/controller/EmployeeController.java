@@ -2,13 +2,18 @@ package com.api.management.leave.leavemanagementapi.controller;
 
 import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
-import com.api.management.leave.leavemanagementapi.utils.AppConstants;
+import com.api.management.leave.leavemanagementapi.constants.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static com.api.management.leave.leavemanagementapi.constants.AppConstants.*;
 
 @RestController
 @RequestMapping("/api/v1/employees")
@@ -21,10 +26,10 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<EmployeeResponse> getAllEmployees(
             @RequestParam(name = "query", required = false) String query,
-            @RequestParam(name = "pageNo", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNo,
-            @RequestParam(name = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
-            @RequestParam(name = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY) String sortBy,
-            @RequestParam(name = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir) {
+            @RequestParam(name = "pageNo", required = false, defaultValue = DEFAULT_PAGE_NUMBER) int pageNo,
+            @RequestParam(name = "pageSize", required = false, defaultValue = DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(name = "sortBy", required = false, defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(name = "sortDir", required = false, defaultValue = DEFAULT_SORT_DIR) String sortDir) {
         return query == null || query.isBlank() || query.isEmpty()
                 ? ResponseEntity.ok(employeeService.getAllEmployees(pageNo, pageSize, sortBy, sortDir))
                 : ResponseEntity.ok(employeeService.getEmployeesByQuery(query, pageNo, pageSize, sortBy, sortDir));
@@ -66,10 +71,18 @@ public class EmployeeController {
     @Operation(summary = "Reset leaves")
     @PostMapping("/reset-leaves")
     public ResponseEntity<EmployeeResponse> resetLeaves (
-            @RequestParam(name = "pageNo", required = false, defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNo,
-            @RequestParam(name = "pageSize", required = false, defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
-            @RequestParam(name = "sortBy", required = false, defaultValue = AppConstants.DEFAULT_SORT_BY) String sortBy,
-            @RequestParam(name = "sortDir", required = false, defaultValue = AppConstants.DEFAULT_SORT_DIR) String sortDir) {
+            @RequestParam(name = "pageNo", required = false, defaultValue = DEFAULT_PAGE_NUMBER) int pageNo,
+            @RequestParam(name = "pageSize", required = false, defaultValue = DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(name = "sortBy", required = false, defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(name = "sortDir", required = false, defaultValue = DEFAULT_SORT_DIR) String sortDir) {
         return ResponseEntity.ok(employeeService.resetLeaves(pageNo, pageSize, sortBy, sortDir));
+    }
+
+    @GetMapping("/{employeeId}/excel")
+    public ResponseEntity<Resource> getFile(@PathVariable Long employeeId) {
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, EXCEL_HEADER_VALUES)
+                .contentType(MediaType.parseMediaType(EXCEL_MEDIA_TYPE))
+                .body(employeeService.load(employeeId));
     }
 }
