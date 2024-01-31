@@ -1,6 +1,9 @@
 package com.api.management.leave.leavemanagementapi.service;
 
 import com.api.management.leave.leavemanagementapi.dto.*;
+import com.api.management.leave.leavemanagementapi.entity.Leave;
+
+import java.util.List;
 
 public interface LeaveService {
 
@@ -15,4 +18,6 @@ public interface LeaveService {
     LeaveMonetizationResponse getInfoForMonetization(String query);
 
     LeaveMonetizationResponse monetizeLeaveCredits(Long employeeId, LeaveMonetizationRequest leaveMonetizationRequest);
+
+    List<Leave> findByEmployeeId(Long userId);
 }

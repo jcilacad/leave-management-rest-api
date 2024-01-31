@@ -1,4 +1,4 @@
-package com.api.management.leave.leavemanagementapi.utils;
+package com.api.management.leave.leavemanagementapi.constants;
 
 import java.math.BigDecimal;
 
@@ -23,4 +23,20 @@ public class AppConstants {
 
     public static final String EMPLOYEE = "Employee";
     public static final String MONETIZATION = "Monetization";
+
+    public static final String EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+    public static final String EXCEL_SHEET = "Leaves";
+    public static final String EXCEL_HEADER_VALUES = "attachment; filename=leaves.xlsx";
+    public static final String EXCEL_MEDIA_TYPE = "application/vnd.ms-excel";
+    public static final String[] EXCEL_HEADERS = {
+            "Id",
+            "Leave Type",
+            "Applied From",
+            "Applied To",
+            "Days Requested",
+            "Vacation Leave",
+            "Sick Leave",
+            "Special Privilege Leave",
+            "Forced Leave"
+    };
 }

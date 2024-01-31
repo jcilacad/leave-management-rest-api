@@ -2,12 +2,16 @@ package com.api.management.leave.leavemanagementapi.service.impl;
 
 import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.entity.Employee;
+import com.api.management.leave.leavemanagementapi.entity.Leave;
 import com.api.management.leave.leavemanagementapi.exception.ResourceNotFoundException;
 import com.api.management.leave.leavemanagementapi.mapper.EmployeeMapper;
 import com.api.management.leave.leavemanagementapi.repository.EmployeeRepository;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
-import com.api.management.leave.leavemanagementapi.utils.AppConstants;
+import com.api.management.leave.leavemanagementapi.constants.AppConstants;
+import com.api.management.leave.leavemanagementapi.service.LeaveService;
+import com.api.management.leave.leavemanagementapi.utils.ExcelHelper;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +28,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
+    private final LeaveService leaveService;
     private final EmployeeRepository employeeRepository;
     private final EmployeeMapper employeeMapper;
 
@@ -163,5 +169,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeResponse.setTotalPages(employees.getTotalPages());
         employeeResponse.setLast(employees.isLast());
         return employeeResponse;
+    }
+
+    @Override
+    public InputStreamResource load(Long employeeId) {
+        List<Leave> leaves = leaveService.findByEmployeeId(employeeId);
+        ByteArrayInputStream inputStream = ExcelHelper.leavesToExcel(leaves);
+        InputStreamResource file = new InputStreamResource(inputStream);
+        return file;
     }
 }

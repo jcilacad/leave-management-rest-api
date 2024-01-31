@@ -1,6 +1,5 @@
 package com.api.management.leave.leavemanagementapi.dto;
 
-import com.api.management.leave.leavemanagementapi.utils.AppConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

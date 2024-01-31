@@ -2,6 +2,9 @@ package com.api.management.leave.leavemanagementapi.service;
 
 import com.api.management.leave.leavemanagementapi.dto.EmployeeDto;
 import com.api.management.leave.leavemanagementapi.dto.EmployeeResponse;
+import org.springframework.core.io.InputStreamResource;
+
+import java.io.ByteArrayInputStream;
 
 public interface EmployeeService {
 
@@ -20,4 +23,6 @@ public interface EmployeeService {
     EmployeeDto excludeEmployeeForcedLeave(Long id, boolean excluded);
 
     EmployeeResponse resetLeaves(int pageNo, int pageSize, String sortBy, String sortDir);
+
+    InputStreamResource load(Long employeeId);
 }
