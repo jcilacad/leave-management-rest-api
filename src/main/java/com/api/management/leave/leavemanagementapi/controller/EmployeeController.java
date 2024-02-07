@@ -2,7 +2,6 @@ package com.api.management.leave.leavemanagementapi.controller;
 
 import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.service.EmployeeService;
-import com.api.management.leave.leavemanagementapi.constants.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -14,9 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.api.management.leave.leavemanagementapi.constants.AppConstants.*;
+import static com.api.management.leave.leavemanagementapi.constants.PathConstants.*;
 
 @RestController
-@RequestMapping("/api/v1/employees")
+@RequestMapping(API_V1_EMPLOYEES)
 @AllArgsConstructor
 public class EmployeeController {
 
@@ -42,34 +42,34 @@ public class EmployeeController {
     }
 
     @Operation(summary = "Get employee by id")
-    @GetMapping("/{id}")
+    @GetMapping(ID)
     public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
         return ResponseEntity.ok(employeeService.getEmployeeById(id));
     }
 
     @Operation(summary = "Update employee")
-    @PutMapping("/{id}")
+    @PutMapping(ID)
     public ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto employeeDto,
                                                       @PathVariable Long id) {
         return ResponseEntity.ok(employeeService.updateEmployee(employeeDto, id));
     }
 
     @Operation(summary = "Delete employee")
-    @DeleteMapping("/{id}")
+    @DeleteMapping(ID)
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         employeeService.deleteEmployee(id);
         return ResponseEntity.ok("Employee deleted successfully.");
     }
 
     @Operation(summary = "Exclude employee's forced leave")
-    @PostMapping("/{id}")
+    @PostMapping(ID)
     public ResponseEntity<EmployeeDto> excludeEmployeeForcedLeave(@PathVariable Long id,
                                                                   @RequestParam(name = "excluded", required = false) Boolean excluded) {
         return ResponseEntity.ok(employeeService.excludeEmployeeForcedLeave(id, excluded));
     }
 
     @Operation(summary = "Reset leaves")
-    @PostMapping("/reset-leaves")
+    @PostMapping(RESET_LEAVES)
     public ResponseEntity<EmployeeResponse> resetLeaves (
             @RequestParam(name = "pageNo", required = false, defaultValue = DEFAULT_PAGE_NUMBER) int pageNo,
             @RequestParam(name = "pageSize", required = false, defaultValue = DEFAULT_PAGE_SIZE) int pageSize,
@@ -78,7 +78,7 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeService.resetLeaves(pageNo, pageSize, sortBy, sortDir));
     }
 
-    @GetMapping("/{employeeId}/excel")
+    @GetMapping(EMPLOYEE_ID_EXCEL)
     public ResponseEntity<Resource> getFile(@PathVariable Long employeeId) {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, EXCEL_HEADER_VALUES)
