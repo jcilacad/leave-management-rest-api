@@ -1,5 +1,6 @@
 package com.api.management.leave.leavemanagementapi.controller;
 
+import com.api.management.leave.leavemanagementapi.constants.PathConstants;
 import com.api.management.leave.leavemanagementapi.dto.*;
 import com.api.management.leave.leavemanagementapi.service.LeaveService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.api.management.leave.leavemanagementapi.constants.PathConstants.*;
+
 @RestController
-@RequestMapping("/api/v1/leaves")
+@RequestMapping(API_V1_LEAVES)
 @AllArgsConstructor
 public class LeaveController {
 
@@ -20,27 +23,27 @@ public class LeaveController {
     private final LeaveService leaveService;
 
     @Operation(summary = "Get employee by official email or employee number")
-    @GetMapping("/request")
+    @GetMapping(REQUEST)
     public ResponseEntity<LeaveResponseDto> getEmployeeByOfficialEmailOrEmployeeNumber(
             @RequestParam(name = "query", required = false) String query) {
         return ResponseEntity.ok(leaveService.getEmployeeByOfficialEmailOrEmployeeNumber(query));
     }
 
     @Operation(summary = "Leave request")
-    @PostMapping("/request")
+    @PostMapping(REQUEST)
     public ResponseEntity<LeaveResponseDto> leaveRequest(@RequestParam(name = "employeeId") Long employeeId,
                                                          @RequestBody @Valid LeaveRequestDto leaveRequestDto) {
         return new ResponseEntity<>(leaveService.leaveRequest(employeeId, leaveRequestDto), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get information for leave computation")
-    @GetMapping("/compute")
+    @GetMapping(COMPUTE)
     public ResponseEntity<LeaveResponseDto> getInfoForComputation(@RequestParam(name = "query") String query) {
         return ResponseEntity.ok(leaveService.getInfoForComputation(query));
     }
 
     @Operation(summary = "Compute leave credits")
-    @PostMapping("/compute/{employeeId}")
+    @PostMapping(COMPUTE_EMPLOYEE_ID)
     public ResponseEntity<LeaveResponseDto> computeLeaveCredits(
             @PathVariable(name = "employeeId") Long employeeId,
             @RequestBody @Valid LeaveComputationDto leaveComputationDto) {
@@ -48,14 +51,14 @@ public class LeaveController {
     }
 
     @Operation(summary = "Get information for leave monetization")
-    @GetMapping("/monetize")
+    @GetMapping(MONETIZE)
     public ResponseEntity<LeaveMonetizationResponse> getInfoForMonetization(
             @RequestParam(name = "query") String query) {
         return ResponseEntity.ok(leaveService.getInfoForMonetization(query));
     }
 
     @Operation(summary = "Monetize leave credits")
-    @PostMapping("/monetize/{employeeId}")
+    @PostMapping(MONETIZE_EMPLOYEE_ID)
     public ResponseEntity<LeaveMonetizationResponse> monetizeLeaveCredits(
             @PathVariable(name = "employeeId") Long employeeId,
             @RequestBody LeaveMonetizationRequest leaveMonetizationRequest) {

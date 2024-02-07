@@ -24,7 +24,6 @@ public class AppConstants {
     public static final String EMPLOYEE = "Employee";
     public static final String MONETIZATION = "Monetization";
 
-    public static final String EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     public static final String EXCEL_SHEET = "Leaves";
     public static final String EXCEL_HEADER_VALUES = "attachment; filename=leaves.xlsx";
     public static final String EXCEL_MEDIA_TYPE = "application/vnd.ms-excel";
